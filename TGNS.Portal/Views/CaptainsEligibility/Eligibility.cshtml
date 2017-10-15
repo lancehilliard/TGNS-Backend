@@ -1,0 +1,46 @@
+﻿@model TGNS.Portal.Models.CaptainsEligibleViewModel
+
+@{
+    ViewBag.Title = "Captains";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Captains Eligibility</h2>
+
+<h3>Competitor (Silver)</h3>
+<table class="table table-bordered table-striped" style="width: auto;">
+    <tr>
+        <th>&nbsp;</th>
+        <th>NS2ID</th>
+        <th>BKA</th>
+    </tr>
+
+    @foreach (var item in Model.PlayersWhoHaveEarnedSilverCompetitorBadge)
+    {
+        <tr>
+            <td style="padding: 4px; background-color: #000000;"><img src="/assets/img/badges/tgns2.png" height="24" width="24" title="Competitor (Silver)" /></td>
+            <td> <span>@Html.Raw(item.PlayerId)</span> </td>
+            <td> @Html.Raw(item.Name) </td>
+        </tr>
+    }
+
+</table>
+<h3>Warrior (Bronze)</h3>
+<table class="table table-bordered table-striped" style="width: auto;">
+    <tr>
+        <th>&nbsp;</th>
+        <th>NS2ID</th>
+        <th>BKA</th>
+    </tr>
+
+
+    @foreach (var item in Model.PlayersWhoHaveEarnedBronzeWarriorBadge)
+    {
+        <tr>
+            <td style="padding: 4px; background-color: #000000;"><img src="/assets/img/badges/tgns25.png" height="24" width="24" title="Warrior (Bronze)" /></td>
+            <td> <span>@Html.Raw(item.PlayerId)</span> </td>
+            <td> @Html.Raw(item.Name) </td>
+        </tr>
+    }
+
+</table>

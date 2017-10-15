@@ -1,0 +1,65 @@
+﻿@model TGNS.Portal.Models.RecordingsAddViewModel
+
+@{
+    ViewBag.Title = "Add Game Recording";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add Game Recording</h2>
+
+<p>Share YouTube videos recorded via TGNS Recording Helper. Add [TGNS] Bot (<a href="steam://friends/add/76561197977609161">add friend</a> | <a href="http://steamcommunity.com/id/tgns" target="_blank">profile</a>) to your Steam Friends roster to receive multi-camera notifications for games you have added cameras to.</p>
+
+@if (Model.GamesOptions.Any())
+{
+    using (Html.BeginForm())
+    {
+        @Html.Hidden("returnJson", false);
+        <table>
+            <tr>
+                <td>What game did you record this week? </td>
+                <td>
+                    <select name="gameStartTimeSeconds">
+                        @foreach (var recordingOption in Model.GamesOptions)
+                        {
+                            <option value="@recordingOption.Value" @(recordingOption.Value.Equals(Model.DefaultGameOptionValue) ? @"selected=""selected""" : string.Empty)>@recordingOption.Text</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>What YouTube Video ID did you upload? </td>
+                <td>
+                    <input type="text" name="videoIdentifier" value="@Model.DefaultVideoIdentifier" placeholder="e.g. lYIRO97dhII"/>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input id="addSubmitButton" type="submit" value="Add Game Recording"/>
+                </td>
+            </tr>
+        </table>
+    }
+   
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#addSubmitButton').click(function() {
+                var $addSubmitButton = $(this);
+                setTimeout(function() { $addSubmitButton.val("Adding...").attr('disabled', 'disabled') }, 0);
+            });
+        });
+    </script>
+}
+else
+{
+    <p style="color: red;">You haven't played any full games in the last three days. Reload this page after playing a full game on TGNS.</p>
+}
+
+<p style="margin-top: 20px;">Want to skip this screen when adding cameras? Start using the @Html.ActionLink("Replay Add Helper Userscript", "AddHelperUserscript", "Replay")!</p>
+
+<p>Consider uploading <em>during</em> gameplay by throttling your Youtube tab's upload speed using <a href="https://developers.google.com/web/tools/chrome-devtools/profile/network-performance/network-conditions?hl=en">Chrome Dev Tools</a>.</p>
+
+<p>@Html.ActionLink("Remove Recordings", "Delete", "Recordings")</p>
+
+<p>@Html.ActionLink("View Recorded Games", "Index", "Replay")</p>

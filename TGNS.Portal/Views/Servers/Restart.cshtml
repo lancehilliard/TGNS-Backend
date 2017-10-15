@@ -1,0 +1,54 @@
+﻿@model IEnumerable<TGNS.Portal.Models.ServerViewModel>
+
+@{
+    ViewBag.Title = "Restart Servers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section documentready
+{    
+    notifySelector = 'table.table tr:first';
+    $('button[name="serverId"]').on('click', function(){$(notifySelector).notify("Attempting Restart. Please wait 30 seconds.", {className: 'info', autoHide: false});setTimeout(function(){$(':input, :button').prop('disabled', true);},0)})
+}
+
+<h2>Restart Servers</h2>
+
+<p>TGNS sometimes become offline or unresponsive such that players cannot connect. Use this page to restart the server when it's in that state.</p>
+
+@{
+    if (ViewBag.PlayerHasGuardian)
+    {
+        using (Html.BeginForm("Restart", "Servers", FormMethod.Post))
+        {
+            <table class="table" style="width: auto;">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>&nbsp;</th>
+                </tr>
+
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <button name="serverId" value="@(Html.Raw(item.ID))" type="submit">Restart Server</button>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        <p>Reasons a server might not appear above:</p>
+        <ul>
+            <li>TGNS Portal is able to query it without error</li>
+            <li><em>you</em> restarted it less than 2 minutes ago</li>
+        </ul>
+    }
+    else
+    {
+        <p>You may use this page after you meet the requirements below.</p>
+    }
+        <p>You must be opted in to Guardian and have played at least 40 games on TGNS to Restart Servers.</p>
+}

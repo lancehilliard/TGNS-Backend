@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewBag.Title = "Community";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Community</h2>
+
+Tactical Gamer Natural Selection (TGNS) is part of two larger communities:
+<ul>
+    <li><a href="http://www.tacticalgamer.com/">TacticalGamer.com</a>, a multi-title gaming community respected since 1996 for mature, respectful play
+        <ul>
+            <li>
+                <a href="https://www.tacticalgamer.com/forum/action/natural-selection">TGNS Forums</a>
+                <ul>
+                    <li><a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-official-rules-and-announcements">Official Announcements</a></li>
+                    <li><a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-contact-an-admin">Contact an Admin</a> - contact all TGNS admins for any reason (AKA "CAA")</li>
+                    <li>
+                        <a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-general-discussion">General Discussion</a> - most active TGNS forum, by far
+                        <ul>
+                            <li><a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-general-discussion/123348-tgns-required-reading">Required Reading</a> - for all regular players on the server</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="https://www.tacticalgamer.com/forum/news-and-announcements/tactical-gamer-official-announcements/103012-teamspeak-3-server-information">TacticalGamer.com TeamSpeak</a> (TGNS channel: ═══════RPG, Action and Other Games══════/Natural Selection 2)</li>
+        </ul>
+    </li>
+    <li>
+        <a href="http://www.naturalselection2.com/">Natural Selection 2</a>, the title-wide, global community for TGNS' title game
+        <ul>
+            <li>
+                <a href="http://unknownworlds.com/">Unknown Worlds Entertainment</a> (UWE)
+                <ul>
+                    <li><a href="http://forums.unknownworlds.com/categories/natural-selection-2">NS2 Forums at UWE</a></li>
+                    @*<li><a href="http://status.unknownworlds.com/">UWE Systems Status</a></li>*@
+                    <li><a href="https://trello.com/b/uFv64kH6/ns2-development-team">NS2 UWE Development Team Development Tracker</a></li>
+                    <li><a href="https://trello.com/b/TVyLggmS/ns2-bug-reports">NS2 Bug Reports Tracker</a></li>
+                    @*<li><a href="https://trello.com/b/91ApENY6/ns2-cdt-development-tracker">NS2 Community Development Team Development Tracker</a></li>*@
+                </ul>
+            </li>
+            @*<li><a href="https://trello.com/b/TnnlI4RZ/ns2">NS2+ Development Tracker</a></li>*@
+            @*<li><a href="http://ns2news.org">NS2News</a></li>*@
+        </ul>
+    </li>
+</ul>
+Recent Community <a href="https://docs.google.com/document/d/1tZ0ZcqnMnfklz6QPp5QwLqPuJDxaxp8U5IIh7HDN19k#heading=h.2m58p9reavf">Approvals</a> (@Html.ActionLink("show only mine", "Settings", "My")):
+
+    <div style="width: 700px; margin-top: 5px;">
+        @foreach (var approvalReason in ViewBag.ApprovalReasons)
+        {
+            <span style="white-space: nowrap; margin-right: 12px;">"@(Html.Raw(approvalReason))"...</span>
+        }
+    </div>

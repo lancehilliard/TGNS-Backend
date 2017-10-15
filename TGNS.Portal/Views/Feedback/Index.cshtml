@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNet.Identity
+@model dynamic
+
+@{
+    ViewBag.Title = "Feedback";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section documentready
+{
+    $('input[type=text], textarea').each(function() {
+    if ( this.value === '' ) {
+        this.focus();
+        return false;
+        }
+    });
+}
+
+
+<h2>Feedback</h2>
+
+<p>This form is for simple feedback to all TGNS admins, without any response.</p>
+<p>If you need a response from a TGNS admin, <a href="https://www.tacticalgamer.com/new-content/213">create a thread</a> in our <a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-contact-an-admin">Contact an Admin forum</a>.</p>
+
+@using (Html.BeginForm("Add", "Feedback", FormMethod.Post))
+{
+    <div style="margin-top: 10px;"><input type="text" name="subject" placeholder="Subject" value="@(TempData["subject"])" style="width: 350px;" maxlength="50" id="subjectInput"/></div>
+    <div style="margin-top: 10px;"><textarea placeholder="Type a brief message for all admins..." style="width: 500px; height: 150px;" name="body">@(TempData["body"])</textarea></div>
+    <div style="margin-top: 10px;"><button>Send as @(HttpContext.Current.Items["UserName"] as string)</button></div>
+}

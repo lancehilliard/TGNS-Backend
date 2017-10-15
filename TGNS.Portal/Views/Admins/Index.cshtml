@@ -1,0 +1,87 @@
+﻿
+@{
+    ViewBag.Title = "Admins";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Admins</h2>
+<ul>
+    <li>@Html.ActionLink("Approvals", "Manage", "Approvals")</li>
+    <li>@Html.ActionLink("Bans", "Manage", "Bans")</li>
+    @*<li>@Html.ActionLink("Buckets", "Manage", "Buckets")</li>*@
+    <li>@Html.ActionLink("Blacklists", "Manage", "Blacklist")</li>
+    <li>@Html.ActionLink("Captains Eligibility", "Eligibility", "CaptainsEligibility") (long load)</li>
+    <li>@Html.ActionLink("Configurations", "Manage", "Configurations")</li>
+    <li>@Html.ActionLink("Guardians", "Index", "Guardians") (long load)</li>
+    <li>@Html.ActionLink("Preferreds", "Manage", "Preferred")</li>
+    <li>@Html.ActionLink("Feedback Viewer", "Index", "FeedbackViewer")</li>
+    @*<li>@Html.ActionLink("My Recent Games", "Index", "Games")</li>*@
+    <li><a href="URL_HERE">TGNS Admin Forum</a></li>
+    <li>
+        Taunt
+        <ul>
+            <li><a href="@ViewBag.TauntWebAdminUrl">UWE Admin Panel</a> (<a href="@ViewBag.TauntAuthenticatedWebAdminUrl">this link embeds the Basic Authentication in the URL</a>)</li>
+            <li>
+                Server Commands <span>(<a id="showServerCommandsLink" href="javascript:;">show</a>)</span>
+                <div id="serverCommandsList" style="display: none; margin-top: 10px; margin-bottom: 50px;">
+                    <select id="serverCommandsDestination">
+                        <option value="1">173.254.254.170:27015</option>
+                    </select>
+                    <ul>
+                        <li><a id="stopCommandLink" href="javascript:;">Stop</a></li>
+                        <li><a id="startCommandLink" href="javascript:;">Start</a></li>
+                        <li><a id="restartCommandLink" href="javascript:;">Restart</a></li>
+                        <li><a id="updateCommandLink" href="javascript:;">Stop, Update, and Start</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li><a href="javascript:alert('View via SFTP folder:\n\n/home/USERNAME_HERE/.config/Natural Selection 2')">Log/Console</a></li>
+        </ul>
+    </li>
+    <li>
+        NS2ID or Partial Player Name: <input type="text" id="playerAliasLookupInput" onfocus="this.select();" style="width: 160px;" /> <button id="playerAliasLookupButton" onclick="$('#playerAliasLookupInput').focus();showPlayerAliases($('#playerAliasLookupInput')[0], $('#playerAliasLookupInput').val());">Lookup</button>
+    </li>
+</ul>    
+@section documentready
+{
+    $('#playerAliasLookupInput').focus().keypress(function keypressHandler(e)
+    {
+        if(e.which == 13) {
+            $(this).blur();
+            $('#playerAliasLookupButton').focus().click();
+        }
+    });
+
+    $('#showServerCommandsLink').click(function(){
+        alert('Caution: the links now being displayed have the potential to disrupt play.');
+        $(this).closest('span').hide();
+        $('#serverCommandsList').show();
+    });
+
+    $('#stopCommandLink').click(function(){
+        var index = $('#serverCommandsDestination').val();
+        location.href = '@Url.Action("Stop", "ServerCommands")/'+index;
+    });
+
+    $('#startCommandLink').click(function(){
+        var index = $('#serverCommandsDestination').val();
+        location.href = '@Url.Action("Start", "ServerCommands")/'+index;
+    });
+
+    $('#restartCommandLink').click(function(){
+        var index = $('#serverCommandsDestination').val();
+        location.href = '@Url.Action("Restart", "ServerCommands")/'+index;
+    });
+
+    $('#updateCommandLink').click(function(){
+        var index = $('#serverCommandsDestination').val();
+        location.href = '@Url.Action("Update", "ServerCommands")/'+index;
+    });
+
+    $('#serverCommandsDestination').click(function(e){
+        e.stopPropagation();
+    }).change(function() {
+        $('html').click();
+    });
+
+}

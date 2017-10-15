@@ -1,0 +1,44 @@
+﻿@model IEnumerable<TGNS.Core.Data.IFeedback>
+
+@{
+    ViewBag.Title = "Feedback";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section HeadStyle {
+    tr.unread td {
+        font-weight: bold;
+    }
+}
+
+<h2>Feedback</h2>
+
+<table class="table" style="width: 700px;">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PlayerId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Subject)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Created)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr @(item.ReadPlayerIds.Contains((long)HttpContext.Current.Items["PlayerId"]) ? string.Empty : "class=unread")>
+        <td>
+            <span>@Html.DisplayFor(modelItem => item.PlayerId)</span>
+        </td>
+        <td>
+            
+            @Html.ActionLink(item.Subject, "Details", new { playerId = item.PlayerId, created = item.Created })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Created)
+        </td>
+    </tr>
+}
+
+</table>

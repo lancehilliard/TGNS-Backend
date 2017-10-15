@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "Broadcast";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Broadcast</h2>
+
+<div>
+    @ViewBag.Message
+</div>
+
+@using (Html.BeginForm("Broadcast", "Admins"))
+{
+    <div style="margin-top: 15px;">
+        <div style="display: inline-block; width: 70px;">Title:</div> <input name="title" type="text" style="width: 300px;" />
+    </div>
+    <div style="margin-top: 15px;">
+        <div style="display: inline-block; width: 70px;">Message:</div> <input name="message" type="text" style="width: 600px;" />
+    </div>
+    <div style="margin-top: 15px;">
+        <input type="submit" value="Send"/>
+    </div>
+}

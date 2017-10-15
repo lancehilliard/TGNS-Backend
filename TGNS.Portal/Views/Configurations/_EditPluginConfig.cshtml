@@ -1,0 +1,75 @@
+﻿@model TGNS.Portal.Models.PluginsViewModel
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        function autoGrowTextArea(textArea) {
+            $(textArea).autosize();
+        }
+
+        $('#saveBtn').click(function () {
+            var selectedPluginName = $("#selectedPluginName").val();
+            var pluginConfigJson = $("#pluginConfigTextArea").val();
+            $.post('@Url.Action("EditConfig")', { selectedPluginName: selectedPluginName, pluginConfigJson: pluginConfigJson }, function (data) {
+                var messageDisplayAction = data.isError ? messageDisplayer.DisplayError : messageDisplayer.DisplaySuccess;
+                messageDisplayAction(data.message);
+            });
+        });
+
+        function prettyStringify(json) { return JSON.stringify(json, null, 2); }
+        var pluginConfigTextArea = $('#pluginConfigTextArea');
+        var myjson = JSON.parse(pluginConfigTextArea.val());
+        var flexiEditorOnChange = function (data){};
+        var opt = { change: function (data) { flexiEditorOnChange(data);}, propertyElement: '<textarea>', valueElement: '<textarea>' };
+        function textAreaOnChange() {
+            var val = pluginConfigTextArea.val();
+            if (val) {
+                try {
+                    myjson = JSON.parse(val);
+                    messageDisplayer.DisplayInfo('Config is valid JSON. Remember to press Save when you\'re done editing!');
+                    pluginConfigTextArea.css('border', '1px solid');
+                } catch (e) {
+                    messageDisplayer.DisplayError('Config is not valid JSON. Keep editing or Undo.');
+                    pluginConfigTextArea.css('border', '1px solid red');
+                }
+            } else {
+                myjson = {};
+            }
+
+            $('#editor').jsonEditor(myjson, opt);
+        }
+        flexiEditorOnChange = function (data) {
+            myjson = data;
+            var prettyJson = prettyStringify(myjson);
+            pluginConfigTextArea.val(prettyJson);
+            textAreaOnChange();
+        }
+        pluginConfigTextArea.change(textAreaOnChange);
+        pluginConfigTextArea.keyup(textAreaOnChange);
+
+        pluginConfigTextArea.val(prettyStringify(myjson));
+        textAreaOnChange();
+        autoGrowTextArea(pluginConfigTextArea[0]);
+
+        $('#editor').jsonEditor(myjson, opt);
+
+        var undoSureBtn = $('#undoSureBtn');
+        $('#undoBtn').click(function () { undoSureBtn.show(); });
+        undoSureBtn.click(renderPluginEditor);
+
+        pluginConfigTextArea.keyup(function (e) {
+            autoGrowTextArea(this);
+        });
+
+        $('#editorFooter').width(pluginConfigTextArea.outerWidth());
+    });
+</script>
+
+@Html.HiddenFor(x => x.SelectedPluginName, new { id="selectedPluginName" })
+<div id="editor" class="json-editor"></div>
+<div style="margin: -10px 0 5px 0;">
+    The JSON below is the data authority when you press: <button id="saveBtn" name="save">Save</button>.
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Or, you may <button id="undoBtn" name="undo">Undo Changes</button>
+    <button id="undoSureBtn" name="undoSure" style="color: red; font-weight: bold; display: none;">Are you sure?</button>
+</div>
+@Html.TextAreaFor(m => m.PluginConfigJson, 5, 124, new { id="pluginConfigTextArea" })
+<div id="editorFooter" style="text-align: right;"><a target="_blank" href="http://json.parser.online.fr/">Online JSON Parser</a> (shows where JSON is invalid)</div>

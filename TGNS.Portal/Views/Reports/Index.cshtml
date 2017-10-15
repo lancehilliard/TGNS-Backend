@@ -1,0 +1,33 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Reports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>@Html.ActionLink("Revenue Per Month", "Revenue")</p>
+<p>@Html.ActionLink("Games", "Games")</p>
+<p>@Html.ActionLink("Notification Subscriptions", "NotificationSubscriptions")</p>
+<p>@Html.ActionLink("Badges Earned", "BadgesEarned")</p>
+<p>@Html.ActionLink("Average Game Duration in Minutes", "AverageGameDurationInMinutes")</p>
+<p>@Html.ActionLink("Average Game Duration in Minutes, Per Build (With WinOrLose Rate)", "AverageGameDurationInMinutesPerBuild")</p>
+<p>@Html.ActionLink("Game Recordings", "GameRecordings")</p>
+<p>@Html.ActionLink("Karma Decay by Player", "KarmaDecayByPlayer")</p>
+<p>@Html.ActionLink("Karma", "Karma")</p>
+<p>@Html.ActionLink("Game Feedback", "GameFeedback")</p>
+<p>@Html.ActionLink("Karma Totals", "KarmaTotals")</p>
+<p>@Html.ActionLink("Primer Signers Count Over Last Month", "PrimerSignersCountOverLastMonth")</p>
+<p>@Html.ActionLink("Earned Count Per Badge", "EarnedCountPerBadge")</p>
+<p>@Html.ActionLink("Approvals: Top 20 Approvers Last Two Weeks", "ApproversTopTwentyLastTwoWeeks")</p>
+<p>@Html.ActionLink("Approvals: Top 20 Approved Last Two Weeks", "ApprovedTopTwentyLastTwoWeeks")</p>
+<p>@Html.ActionLink("Approvals: Count Per Day Last Two Weeks", "ApprovalsPerDayLastTwoWeeks")</p>
+<p>@Html.ActionLink("Badges List", "BadgesList")</p>
+<p>@Html.ActionLink("Recent SM Primer Signers", "RecentSmPrimerSigners")</p>
+<p>@Html.ActionLink("Recent Non-SM Primer Signers", "RecentNonSmPrimerSigners")</p>
+<p>@Html.ActionLink("Captains Night Games Count Per Player", "CaptainsNightGamesCountPerPlayer")</p>
+<p>@Html.ActionLink("Cumulative Score By Player", "CumulativeScoreByPlayer")</p>
+<p>@Html.ActionLink("Average Score By Player", "AverageScoreByPlayer")</p>
+<p>@Html.ActionLink("Captains Night Total Captains Games Count", "CaptainsNightTotalCaptainsGamesCount")</p>
+<p>@Html.ActionLink("Marine Win Rates", "MarineWinRates")</p>

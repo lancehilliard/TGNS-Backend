@@ -1,0 +1,37 @@
+﻿@model TGNS.Portal.Controllers.RecordingsDeleteViewModel
+
+@{
+    ViewBag.Title = "Remove Recordings";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>Remove recordings from Replay.</p>
+
+<table id="games" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th style="width: 75px;">&nbsp;</th>
+            <th>Map</th>
+            <th>Duration</th>
+            <th>When</th>
+            <th>By</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var deletableGameRecording in Model.DeletableGameRecordings)
+        {
+            <tr>
+                <td>@Html.ActionLink("Remove", "DeleteRecording", new { serverName = deletableGameRecording.Game.ServerName, startTimeSeconds = deletableGameRecording.Game.StartTimeSeconds, playerId = deletableGameRecording.PlayerId })</td>
+                <td>@deletableGameRecording.Game.MapName</td>
+                <td>@(Convert.ToInt32(deletableGameRecording.Game.DurationInSeconds / 60))m</td>
+                <td>@deletableGameRecording.Game.Created.ToShortDateString()</td>
+                <td>@(deletableGameRecording.BkaData != null && !string.IsNullOrWhiteSpace(deletableGameRecording.BkaData.Bka) ? deletableGameRecording.BkaData.Bka : deletableGameRecording.PlayerId.ToString())</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>@Html.ActionLink("Add Recordings", "Add", "Recordings")</p>
+
+<p>@Html.ActionLink("View Recorded Games", "Index", "Replay")</p>

@@ -1,0 +1,65 @@
+﻿@model TGNS.Portal.Models.PenpointViewModel
+
+@{
+    ViewBag.Title = "Penpoint Viewer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section documentready
+{
+    
+    var imageUrl = "@Model.EditData.ImageUrl";
+
+    $("<img />").attr("src", imageUrl).error(function(){alert('There was an error loading the following image:\n\n'+imageUrl+'\n\nThis Penpoint cannot be viewed now.');}).load(function(){
+
+        var imageDimensions = {}
+        imageDimensions.width = this.width;
+        imageDimensions.height = this.height;
+
+        sketchpad = Raphael.sketchpad("viewer", {
+            width: imageDimensions.width,
+            height: imageDimensions.height,
+            strokes: @Html.Raw(Model.EditData.SketchJson),
+            editing: false
+        });
+
+        var viewerDiv = $("#viewer");
+        viewerDiv.width(imageDimensions.width);
+        viewerDiv.height(imageDimensions.height);
+        viewerDiv.css("background-image", "url(" + imageUrl + ")");
+
+        $("#view").width(imageDimensions.width).show();
+    
+        $("#editButton").click(function(){
+            location.href = baseUrl + 'Edit/@Model.EditData.Id'
+        });
+    
+    $("#learnMoreLink").click(function(){
+        var learnMoreDiv = $('<div><p>Penpoint lets you draw lines over an image and easily share the result -- all on the web.</p><p>You\'re viewing a Penpoint now. If you like, click "Edit" and learn how to create your own!</p></div>');
+        learnMoreDiv.dialog({width:420,title: 'Penpoint',modal:true});            
+    });
+
+    });
+
+}
+
+<h2>Penpoint Viewer</h2>
+<div id="view" style="display: none;">
+    <button id="editButton" style="float: right;" title="Edit this Penpoint's lines...">Edit</button>
+    <p>This is a Penpoint that someone created to share with you. <a href="javascript:;" id="learnMoreLink">Learn More</a></p>
+    <div id="viewer"></div>
+</div>
+<script type="text/javascript">
+    var baseUrl = "@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))" + "Penpoint/";
+</script>
+@section scripts
+{
+    @Scripts.Render("~/assets/js/jquery-migrate-1.2.1.min.js")
+    @Scripts.Render("~/assets/js/raphael-min.js")
+    @Scripts.Render("~/assets/js/json2.min.js")
+    @Scripts.Render("~/assets/js/raphael.sketchpad.js")
+    @Scripts.Render("~/assets/js/jquery-ui-1.11.1.custom/jquery-ui.min.js")
+}
+@section Head {
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+}

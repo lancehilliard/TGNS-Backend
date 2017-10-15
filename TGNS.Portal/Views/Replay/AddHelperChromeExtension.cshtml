@@ -1,0 +1,60 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "TGNS Replay Add Helper Chrome Extension";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Replay Add Helper Chrome Extension</h2>
+
+<h3>About</h3>
+<p>Once you've finished recording with @Html.ActionLink("TGNS Recording Helper", "RecordingHelper", "Replay"), it's time to upload to YouTube. When the YouTube upload is finished, you can @Html.ActionLink("add your recordings to Replay using the 'Add' form", "Add", "Recordings").</p>
+
+<p>Or, you can automate the Add operation in Replay when each YouTube upload is finished, such that uploading is your final manual step when adding to Replay! This is done with the use of a Chrome extension which automates the Replay Add every time you upload to YouTube a video which was recorded via TRH.</p>
+
+<div>
+    <a href="/assets/zip/TgnsReplayAddHelper_ChromeExtension.zip"><img src="https://i.imgur.com/tiSGiwa.jpg" /></a> <span><a href="/assets/zip/TgnsReplayAddHelper_ChromeExtension.zip" style="font-size: 28px; font-weight: bold;">Download TGNS Replay Add Helper Chrome Extension</a></span>
+</div>
+
+<p style="margin-top: 7px;">... and start automating Replay Adds when you upload TRH-recorded videos to YouTube! :)</p>
+
+<h3>Getting Started</h3>
+
+<p>To install the Replay Add Helper Chrome Extension:</p>
+<ol>
+    <li><strong>Extract the zip file : </strong>This will provide you the CRX file that's the actual Chrome extension</li>
+    <li><strong>Browse to chrome://extensions/ in Chrome : </strong>This shows you all of your Chrome extensions and lets you add new extensions</li>
+    <li>
+        <strong>Drag the CRX file into the Chrome Extensions window : </strong>This will prompt you to install the extension
+        <ul>
+            <li>All Chrome extensions can "Read your browsing history". Like most, this extension makes no use of it.</li>
+        </ul>
+    </li>
+    <li><strong>Click the "Add Extension" button : </strong>And notice the TGNS icon appear to the right of your address bar in Chrome.</li>
+    <li><strong>Log into the TGNS Portal : </strong>Once you login to TGNS Portal, you may keep that TGNS Portal tab open or close it (your choice)</li>
+    <li>
+        <strong>Upload to YouTube a video recorded via TGNS Recording Helper : </strong> Make sure your upload defaults allow public or unlisted access to the video
+        <table style="margin-left: 20px; margin-top: 10px; margin-bottom: 5px;">
+            <tr>
+                <td>
+                    <div>Upload <strong>without</strong> extension:
+                    </div>
+                    <div>
+                        <img src="https://i.imgur.com/s3pNa2s.jpg" style="border: 1px solid black;"/>
+                    </div>
+                </td>
+                <td style="padding-left: 20px;">
+                    <div>Upload <strong>with</strong> extension:
+                    </div>
+                    <div>
+                        <img src="https://i.imgur.com/NqxE9xW.jpg" style="border: 1px solid black;"/>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </li>
+    <li><strong>You're finished! : </strong> Uploading the TRH-recorded video to YouTube has automatically added it to Replay! Easy!</li>
+</ol>
+<p>Note: this extension only adds to Replay your YouTube uploads whose title begins with a game ID (that number at the beginning of the TRH-generated filename) followed by the word 'TGNS'. So, you can upload other videos to your YouTube account without worrying about this extension trying to add them to Replay -- it won't even try.</p>
+<p>If you have any questions about or recommendations for this Chrome extension, please join us in our <a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-general-discussion/136543-tgns-replay-add-helper-chrome-extension">TGNS Replay Add Helper Chrome Extension forum thread</a>!</p>
+<p>Thanks for contributing to @Html.ActionLink("Replay", "Index")!</p>

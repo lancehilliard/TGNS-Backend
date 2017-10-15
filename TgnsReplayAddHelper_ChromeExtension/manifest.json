@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+
+  "name": "TGNS Replay Add Helper",
+  "description": "Automatically add TGNS Recording Helper uploads to Replay",
+  "version": "0.01",
+
+  "browser_action": {
+   "default_icon": "tgns_50x50.png",
+   "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/upload"],
+      "js": ["replay.js"]
+    }
+  ],
+  "permissions": [
+   "activeTab", "tabs", "*://*.youtube.com/upload", "*://rr.tacticalgamer.com/*"
+   ],
+  "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+  }
+}

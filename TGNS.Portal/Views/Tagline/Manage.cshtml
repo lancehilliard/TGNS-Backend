@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "Tagline";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section documentready
+{    
+    notifySelector = 'button[name="submit"]';
+    $(notifySelector).on('click', function(){$(this).notify("Saving tagline. Please wait.", {className: 'info', autoHide: false});setTimeout(function(){$(':input, :button').prop('disabled', true);},0)})
+}
+
+<h2>Tagline</h2>
+
+<p>Your tagline appears when you join the game server.</p>
+
+@using (Html.BeginForm("Manage", "Tagline", FormMethod.Post))
+{
+    <div>
+        <input name="tagline" type="text" value="@(ViewBag.Tagline)" maxlength="60" style="width: 500px;" placeholder="Example: I'm the luckiest fade alive!" />
+    </div>
+    <div style="margin-top: 5px;">
+        <button name="submit">Save</button>
+    </div>
+}
+<p>Note: Anyone may set a tagline, but they display only when you join the server as a Supporting Member.</p>

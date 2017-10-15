@@ -1,0 +1,44 @@
+﻿@using System.Linq
+@model System.Collections.Generic.IEnumerable<TGNS.Core.Domain.ITrack>
+
+@{
+    ViewBag.Title = "Laps - Tracks";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Laps: Tracks</h2>
+<p>Every track always begins and ends in the same room.</p>
+<p>You can also @Html.ActionLink("view only your laps", "Manage"), @Html.ActionLink("view everyone's best laps", "Index"), or @Html.ActionLink("learn more", "Help").</p>
+<div class="dataTableLoading">Loading...</div>
+<div style="width: 650px;">
+    <table class="table table-bordered table-striped dataTable" data-order='[[ 0, "asc" ],[ 1, "asc" ]]' style="width: auto;">
+        <thead>
+        <tr>
+            <th>Map</th>
+            <th>Name</th>
+            <th>Rooms Route</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var track in Model)
+        {
+            <tr>
+                <td>@track.MapName</td>
+                <td style="white-space: nowrap;">@track.Name</td>
+                <td>@Html.Raw(string.Join(" &rarr; ", track.LocationNames))</td>
+                <td>@track.LocationNames.Count()</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(function() {
+        $('.dataTable').DataTable({
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
+        });
+        $('.dataTableLoading').hide();
+        $('.dataTable').show();
+    });
+</script>

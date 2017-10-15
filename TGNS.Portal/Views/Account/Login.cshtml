@@ -1,0 +1,70 @@
+﻿@model TGNS.Portal.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Hi!";
+    var previewImageUrls = new Dictionary<string, string> {{"/Badges", "http://i.imgur.com/2PbrDOW.png" }, {"/Karma", "http://i.imgur.com/AnIy7db.png" }, { "/BetterKnownAs", "http://i.imgur.com/0ER1adM.png" }, {"/Feedback", "http://i.imgur.com/xVRND3H.png"}, {"/FullSpec", "http://i.imgur.com/j4QLvM2.png" }, {"/Laps", "http://i.imgur.com/kgmHBcm.png" }, {"/My", "http://i.imgur.com/iieVSP5.png"}, {"/Notifications", "http://i.imgur.com/UNRJpMZ.png"}, {"/Recordings", "http://i.imgur.com/dxcHDr3.png"}, {"/Servers/Reset", "http://i.imgur.com/UUBqQkN.png"}, {"/Servers/Restart", "http://i.imgur.com/sNSVxBc.png"}, {"/Tagline", "http://i.imgur.com/YKkWY5u.png" } };
+    var returnUrl = Request["ReturnUrl"];
+    var previewImageUrl = string.Empty;
+    foreach (var key in previewImageUrls.Keys)
+    {
+        if (returnUrl.StartsWith(key, StringComparison.InvariantCultureIgnoreCase))
+        {
+            previewImageUrl = previewImageUrls[key];
+        }
+    }
+    }
+
+<h2>@ViewBag.Title</h2>
+<div class="row">
+    <div class="col-md-8">
+        <section id="socialLoginForm">
+            <p>This page is personalized. To continue:</p>
+            @Html.Partial("_ExternalLoginsListPartial", new {Action = "ExternalLogin", ReturnUrl = ViewBag.ReturnUrl})
+        </section>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(previewImageUrl))
+{
+    <div class="row">
+        <div class="col-md-8">
+            <div id="container">
+                <div id="contents">
+                    <img src="@previewImageUrl">
+                </div>
+                <div id="gradient">
+                </div>
+            </div>
+        </div>
+    </div>    
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+@section HeadStyle
+{
+    #container {
+        position:relative;
+        padding: 6px 0 -20px 15px;
+        margin: 6px 0 -20px 15px;
+    }
+    #contents {
+        background:white;
+    }
+    #gradient {
+        position:absolute;
+        z-index:2;
+        right:0; bottom:0; left:0;
+        height:300px;
+        background: none;
+        background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(255,255,255,1) 80%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(80%,rgba(255,255,255,1)));
+        background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 80%);
+        background: -o-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 80%);
+        background: -ms-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 80%);
+        background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 80%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 );
+    }
+}

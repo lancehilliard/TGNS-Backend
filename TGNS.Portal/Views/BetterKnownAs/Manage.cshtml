@@ -1,0 +1,36 @@
+﻿@using TGNS.Core.Data
+@using TGNS.Portal.Classes
+
+@{
+    ViewBag.Title = "Better Known As";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var bkaData = ViewData["bkaData"] as IBkaData;
+    var bka = bkaData == null ? "(none)" : bkaData.Bka;
+    var lastSet = bkaData == null ? "(never set)" : bkaData.PlayerSetGmtDisplay;
+        
+}
+
+@section documentready
+{
+    notifySelector = 'button[name="submit"]';
+    $(notifySelector).on('click', function(){$(this).notify("Saving BKA. Please wait.", {className: 'info', autoHide: false});setTimeout(function(){$(':input, :button').prop('disabled', true);},0)})
+}
+
+<h2>BKA</h2>
+
+<p>Your BKA ("Better Known As") is the exact player name by which you're best known on the game server.</p>
+<p>To promote fellowship and teamplay, TGNS regulars play with player names matching their BKA.</p>
+@*<p>Playing with a player name exactly matching your BKA is a prerequisite to the TGNS Primer reserved slot (<a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-general-discussion/122749-read-and-sign-the-tgns-primer">learn more</a>).</p>*@
+<div>
+    <b><u>Your current BKA</u>:</b>
+</div>
+<div>
+    @(bka)
+</div>
+<div>
+    <b><u>Last set</u>:</b>
+</div>
+<div>
+    @(lastSet)
+</div>
+<p style="margin-top: 7px;">Use the <b>sh_name</b> client console command when you're on the game server to set your BKA. Use of this command has a 3-week cooldown, but the BKA you set with it is remembered indefinitely.</p>

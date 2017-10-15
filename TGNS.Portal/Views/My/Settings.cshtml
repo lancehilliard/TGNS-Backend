@@ -1,0 +1,78 @@
+﻿@using TGNS.Core.Domain
+
+@{
+    ViewBag.Title = "Settings";
+}
+
+<h2>Settings</h2>
+
+<p>This page shows your settings at a glance. Click on any value for more.</p>
+
+<h3>Identity</h3>
+<p>Derived from your Steam ID, your NS2ID is key to TGNS privilege management. </p>
+<p>Your NS2ID: @(Html.Raw(ViewBag.Ns2Id))</p>
+<p>@Html.ActionLink("View your BKA (Better Known As)", "Manage", "BetterKnownAs")</p>
+
+
+<h3>Badges</h3>
+Selected badge: @(Html.ActionLink(ViewBag.ShowInGameBadgeName as string, "Manage", "Badges", null, new { style = "font-weight: bold;" }))
+
+@*<h3>FullSpec</h3>
+Current Status: @(Html.ActionLink(ViewBag.FullSpecOptedInStatus as string, "Manage", "FullSpec", null, new { style = "font-weight: bold;" }))*@
+
+<h3>Tagline</h3>
+Current tagline: @(Html.ActionLink(ViewBag.Tagline as string, "Manage", "Tagline", null, new { style = "font-weight: bold;" }))
+
+<h3>Auto Max FPS</h3>
+Current auto max FPS: @(Html.ActionLink(ViewBag.MaxFps as string, "Index", "AutoMaxFps", null, new { style = "font-weight: bold;" }))
+
+<h3>Recently Received Approvals</h3>
+@if (ViewBag.RecentApprovalsWithReasonsCount > 0)
+{
+    <p>You've received <strong>@ViewBag.RecentApprovalsCount</strong> @(ViewBag.RecentApprovalsCount == 1 ? "Approval" : "Approvals") recently. Approvals with reasons are shown below.</p>
+    <table class="table" style="width: 350px;">
+        <tr>
+            <th>When</th>
+            <th>Server</th>
+            <th>Reason</th>
+        </tr>
+        @foreach (var item in @ViewBag.RecentApprovalsWithReasons)
+        {
+            <tr>
+                <td>@item.Created</td>
+                <td>@item.ServerName</td>
+                <td>@item.Reason</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    if (ViewBag.RecentApprovalsCount > 0)
+     {
+        <p>You've received @ViewBag.RecentApprovalsCount Approvals recently, but none specified a reason.</p>
+     }
+     else
+     {
+         <p>You've not received any Approvals recently.</p>
+     }
+    
+}
+
+<h2>Log Out</h2>
+
+@{
+    if (Request.IsAuthenticated)
+    {
+        <p>Click below to log out.</p>
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+        {
+        @Html.AntiForgeryToken()
+        <a href="javascript:document.getElementById('logoutForm').submit()">Log Out</a>
+        }
+    }
+    else
+    {
+        <p>Logout is not available while you're on the game server.</p>
+    }
+}

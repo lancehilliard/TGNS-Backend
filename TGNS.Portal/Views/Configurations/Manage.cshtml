@@ -1,0 +1,44 @@
+﻿@model TGNS.Portal.Models.PluginsViewModel
+
+@{
+    ViewBag.Title = "Configurations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Head {
+    <link rel="stylesheet" href="/assets/js/FlexiJsonEditor/jsoneditor.css" />
+}
+
+@section scripts
+{
+    @Scripts.Render("~/assets/js/FlexiJsonEditor/json2.js")
+    @Scripts.Render("~/assets/js/FlexiJsonEditor/jquery.jsoneditor.min.js")
+    @Scripts.Render("~/assets/js/autosize/jquery.autosize.min.js")
+}
+
+<script type="text/javascript">
+    function renderPluginEditor() {
+        var selectedPluginName = $("#pluginNameSelectList option:selected").first().val();
+        if (selectedPluginName != '') {
+            $.get('@Url.Action("LoadConfig")',
+            { selectedPluginName: selectedPluginName }, function (data) {
+                $("#selectedPluginEditor").html(data);
+            });
+        }
+    }
+</script>
+
+@section documentready
+{
+    if ('@Model.SelectedPluginName' != '') {
+    renderPluginEditor()
+    }
+
+    $('#pluginNameSelectList').change(renderPluginEditor);
+}
+
+<h2>Configurations</h2>
+
+        @Html.DropDownListFor(m => m.SelectedPluginName, Model.PluginNames, "Select Configuration", new { id="pluginNameSelectList"})
+
+<div id="selectedPluginEditor"></div>

@@ -1,0 +1,53 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "TGNS Replay Contributors Guide";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>TGNS Replay Contributors Guide</h2>
+
+<p>TGNS Replay presents past TGNS games from multiple players' synchronized perspectives. When you're ready to contribute your camera, this guide will take you step-by-step, from installing OBS to record your games, to installing TGNS Recording Helper to synchronize your OBS timing with everyone else's, to uploading video files to YouTube, to adding recordings you've manually uploaded to YouTube.</p>
+<p>If you have any questions along the way, give the nice folks in the <a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-general-discussion">the TGNS forums</a> a chance to help!</p>
+
+<ul>
+    <li id="obs"><span style="font-size: large;"><a href="https://obsproject.com/download">Download Open Broadcaster Software Classic</a> and install it.</span><br/>OBS will record your TGNS games to video files, which you can add to Replay.<br/><strong>Note: OBS Studio isn't supported. You want OBS Classic.</strong></li>
+    <li>Configure OBS:
+        <ul>
+            <li>Required: In <strong>Settings > General</strong>, UNcheck "Minimize to Notification Area", as OBS must remain at least in your taskbar if it is to be successfully automated by TGNS Recording Helper</li>
+            <li>Recommended: In <strong>Settings > Encoding</strong>, UNcheck "Use CBR", as "Constant Bit Rate" dramatically increases your recorded video's filesize without dramatically improving quality</li>
+            <li>Recommended: In <strong>Settings > Hotkeys</strong>, CHECK "Use Push-to-talk", with the "Push-to-Talk" hotkey assigned to your NS2 voicecomm key. This will capture in your OBS video everything you say in NS2.</li>
+            <li>OBS has many other settings, and <a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-general-discussion">the TGNS forums</a> are frequented by players who can provide any help you need.</li>
+            <li>At the very least, <strong>you'll need a "Scene" with a "Source"</strong> that is the NS2 application (recommended: Enable "Capture mouse cursor" in your Source properties).
+                <ul>
+                    <li>Create your Scene and Source, and then record some gameplay manually. Review the video file OBS creates, and then tweak your settings/properties and record again -- repeat until you're happy with your output. And remember, you can always return to OBS to tweak its recording settings in the future!</li>
+                </ul>
+            </li>
+            <li>Consider also: YouTube's <a href="https://support.google.com/youtube/answer/1722171">Recommended upload encoding settings</a></li>
+        </ul>
+    </li>
+
+    <li id="recordinghelper" style="margin-top: 20px;"><span style="font-size: large;">@Html.ActionLink("Download TGNS Recording Helper", "RecordingHelper") and run it.</span><br/>TRH will automate your OBS instance, such that OBS begins recording precisely at the start of TGNS games and ends recording precisely at their finish. TRH also renames videos using metadata from the recorded game. It has a couple of other optional features, too, but TRH's purpose is to automate OBS so that your games are all automatically locally recorded, with game-descriptive filenames -- you just play, and TRH automates all the recording for you.</li>
+    <li>Configure TRH:
+        <ul>
+            <li><strong>OBS AutoLaunch Filename : </strong>This is the location of the OBS instance above</li>
+            <li><strong>Recording Output Folder : </strong>This is the folder where OBS is writing videos to your disk ("OBS > Settings > Broadcast Settings > File Path", minus the file extension)</li>
+            <li><strong>Output File Extension : </strong>This is the file extension with which OBS is writing videos to your disk (only the file extension from "OBS > Settings > Broadcast Settings > File Path")</li>
+        </ul>
+    </li>
+    <li>Consider leaving TRH running at all times, so you never forget to record all your TGNS games. It sits in your system tray and consumes negligible system resources.</li>
+
+    <li id="addhelper" style="margin-top: 20px;"><span style="font-size: large;"><a href="https://youtube.com/upload">Upload videos to YouTube.</a></span> Specify the video's privacy as Public or Unlisted. This will create an 11-character video identifier you can give to Replay.</li>
+    <li>Below are two different URLs of the same arbitrary example YouTube video. The 11-character video identifiers are displayed in bold. You'll add these identifiers to Replay (see steps below).
+        <ul>
+            <li>https://www.youtube.com/watch?v=<strong>IEjfsEL5-rA</strong></li>
+            <li>https://youtu.be/<strong>IEjfsEL5-rA</strong></li>
+        </ul>
+    </li>
+
+    <li id="add" style="margin-top: 20px;"><span style="font-size: large;">@Html.ActionLink("Add YouTube video identifiers to Replay.", "Add", "Recordings")</span> This enables others to @Html.ActionLink("watch the games", "Index") you recorded by watching not only your view, but synchronized with recordings from other players!</li>
+    <li>Any TGNS player who has registered their <a href="https://docs.google.com/document/d/1tZ0ZcqnMnfklz6QPp5QwLqPuJDxaxp8U5IIh7HDN19k/edit#heading=h.76zbouo255tx">Better Known As</a> player name on the game server may add to Replay.</li>
+    <li>Adding videos to Replay earns you @Html.ActionLink("Karma", "Index", "Karma")!</li>
+    <li>@Html.ActionLink("Learn about the TGNS Replay Add Helper Userscript", "AddHelperUserscript") and optionally install it. This userscript automatically adds to Replay any TRH-recorded videos you upload to YouTube. While optional, this userscript lets you skip Replay's Add screen altogether and makes contributing to Replay even easier! Just play, and drag the TRH-recorded videos into YouTube's upload page -- and the other steps of the Add process will automate themselves!<br/>Note: you <em>might</em> have to restart your browser when you first install the userscript.</li>
+</ul>
+<p>Thanks for contributing to @Html.ActionLink("Replay", "Index")! If you have any suggestions for how to improve this guide, please drop us a line in the <a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-general-discussion">the TGNS forums</a>!</p>

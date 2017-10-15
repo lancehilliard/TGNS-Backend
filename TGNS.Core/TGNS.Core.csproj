@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EC96948E-80EF-440B-A4B4-4374BCEAA93D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TGNS.Core</RootNamespace>
+    <AssemblyName>TGNS.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MySql.Data">
+      <HintPath>..\packages\MySql.Data.6.8.3\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Renci.SshNet, Version=2016.0.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\packages\SSH.NET.2016.0.0\lib\net40\Renci.SshNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SteamKit2, Version=1.6.2.38878, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SteamKit2.1.6.2\lib\net40\SteamKit2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\ServerAdminCommandSender.cs" />
+    <Compile Include="Commands\ServerGetter.cs" />
+    <Compile Include="Commands\ServerProcessCommandSender.cs" />
+    <Compile Include="Commands\ServerQueryWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Commands\SftpFileUploader.cs" />
+    <Compile Include="Commands\SshCommandSender.cs" />
+    <Compile Include="Data\ApprovalsGetter.cs" />
+    <Compile Include="Data\ApprovalsRemover.cs" />
+    <Compile Include="Data\AutoMaxFpsGetter.cs" />
+    <Compile Include="Data\AutoMaxFpsSetter.cs" />
+    <Compile Include="Data\BadgePlayersGetter.cs" />
+    <Compile Include="Data\BanAdder.cs" />
+    <Compile Include="Data\BanRemover.cs" />
+    <Compile Include="Data\BansGetter.cs" />
+    <Compile Include="Data\BkaData.cs" />
+    <Compile Include="Data\BkaDataGetter.cs" />
+    <Compile Include="Data\BkaDataParser.cs" />
+    <Compile Include="Data\BlacklistEntriesGetter.cs" />
+    <Compile Include="Data\BlacklistEntriesSetter.cs" />
+    <Compile Include="Data\BlacklistEntryAdder.cs" />
+    <Compile Include="Data\BlacklistEntryRemover.cs" />
+    <Compile Include="Data\BucketPlayersGetter.cs" />
+    <Compile Include="Data\BucketsGetter.cs" />
+    <Compile Include="Data\BucketsPlayerAdder.cs" />
+    <Compile Include="Data\BucketsPlayerRemover.cs" />
+    <Compile Include="Data\BucketsSetter.cs" />
+    <Compile Include="Data\CameraViewNamesGetter.cs" />
+    <Compile Include="Data\ChatBotsLogLineAdder.cs" />
+    <Compile Include="Data\CurrentUserPlayerIdGetter.cs" />
+    <Compile Include="Data\DataAccessor.cs" />
+    <Compile Include="Data\FeedbackReadSetter.cs" />
+    <Compile Include="Data\FeedbacksSetter.cs" />
+    <Compile Include="Data\FeedbacksGetter.cs" />
+    <Compile Include="Data\GameRecordingAdder.cs" />
+    <Compile Include="Data\GameRecordingDurationGetter.cs" />
+    <Compile Include="Data\GameRecordingKarmaAdder.cs" />
+    <Compile Include="Data\GameRecordingKarmaGetter.cs" />
+    <Compile Include="Data\GameRecordingProviderStatisticsGetter.cs" />
+    <Compile Include="Data\GameRecordingProviderStatisticsSetter.cs" />
+    <Compile Include="Data\GameRecordingRemover.cs" />
+    <Compile Include="Data\GameRecordingsGetter.cs" />
+    <Compile Include="Data\GamesGetter.cs" />
+    <Compile Include="Data\GuardiansGetter.cs" />
+    <Compile Include="Data\KarmaAdder.cs" />
+    <Compile Include="Data\KarmaGetter.cs" />
+    <Compile Include="Data\LapsGetter.cs" />
+    <Compile Include="Data\NotificationsLogLineAdder.cs" />
+    <Compile Include="Data\FriendRequestsLogger.cs" />
+    <Compile Include="Data\NotificationSubscriptionSetter.cs" />
+    <Compile Include="Data\NotificationSubscriptionsGetter.cs" />
+    <Compile Include="Data\NotificationSubscribersGetter.cs" />
+    <Compile Include="Data\PlayedGamesGetter.cs" />
+    <Compile Include="Data\Player.cs" />
+    <Compile Include="Data\PlayerAdminChecker.cs" />
+    <Compile Include="Data\PlayerIdAdapter.cs" />
+    <Compile Include="Data\PlayerIdentity.cs" />
+    <Compile Include="Data\PlayerAliasesGetter.cs" />
+    <Compile Include="Data\PlayerIdGetter.cs" />
+    <Compile Include="Data\PlaypalsGetter.cs" />
+    <Compile Include="Data\PreferredEntriesGetter.cs" />
+    <Compile Include="Data\PreferredEntriesSetter.cs" />
+    <Compile Include="Data\PreferredEntryAdder.cs" />
+    <Compile Include="Data\PreferredEntryRemover.cs" />
+    <Compile Include="Data\PushLogsGetter.cs" />
+    <Compile Include="Data\FriendRequestsGetter.cs" />
+    <Compile Include="Data\RecentPlayersGetter.cs" />
+    <Compile Include="Data\ReplayGamesDatatablesDataGetter.cs" />
+    <Compile Include="Data\ReplayVideoStatisticsGetter.cs" />
+    <Compile Include="Data\TgJsonFixer.cs" />
+    <Compile Include="Data\TracksGetter.cs" />
+    <Compile Include="Domain\Approval.cs" />
+    <Compile Include="Domain\Ban.cs" />
+    <Compile Include="Domain\BlacklistEntry.cs" />
+    <Compile Include="Domain\BucketPlayer.cs" />
+    <Compile Include="Domain\Buckets.cs" />
+    <Compile Include="Domain\PlayedGame.cs" />
+    <Compile Include="Domain\PreferredEntry.cs" />
+    <Compile Include="Domain\PushLog.cs" />
+    <Compile Include="Domain\Lap.cs" />
+    <Compile Include="Domain\ServerModel.cs" />
+    <Compile Include="Domain\Track.cs" />
+    <Compile Include="Extensions\String.cs" />
+    <Compile Include="Messaging\DictionaryMessagePusher.cs" />
+    <Compile Include="Messaging\IMessagePusher.cs" />
+    <Compile Include="Messaging\MessagePushLogger.cs" />
+    <Compile Include="Messaging\PushBulletMessagePusher.cs" />
+    <Compile Include="Messaging\PushSummary.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\ServerAdminNetworkCredentialBuilder.cs" />
+    <Compile Include="Steam\SteamIdConverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\MapCycleJsonGetter.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

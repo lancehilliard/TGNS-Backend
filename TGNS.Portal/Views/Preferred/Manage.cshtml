@@ -1,0 +1,61 @@
+﻿@model TGNS.Portal.Models.PreferredViewModel
+
+@{
+    ViewBag.Title = "Preferreds";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section HeadStyle
+{
+    .linkButton {
+    background:none!important;
+    border:none;
+    padding:0!important;
+    color: #428bca;
+    }
+
+    .linkButton:hover
+    {
+    text-decoration: underline;
+    }
+}
+
+<h2>Preferreds</h2>
+
+<table class="table table-bordered table-striped" style="width: auto;">
+    <tr>
+        <th>NS2ID</th>
+        <th>For</th>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        @using (Html.BeginForm("Add", "Preferred", FormMethod.Post, new { id = "AddPreferredEntryForm", name = "AddPreferredEntryForm" }))
+        {
+            <td><input name="playerId" type="text" placeholder="NS2ID" style="width: 85px;" /></td>
+            <td><input name="pluginName" type="text" placeholder="For" style="width: 85px;" /></td>
+            <td><input type="submit" value="Add" /></td>
+        }
+    </tr>
+
+    @foreach (var item in Model.PreferredEntries)
+    {
+        <tr>
+            <td> <span>@Html.Raw(item.PlayerId)</span> </td>
+            <td> @Html.Raw(item.PluginName) </td>
+            <td>
+                @using (Html.BeginForm("Delete", "Preferred", FormMethod.Post, new { id = "DeletePreferredEntryForm", name = "DeletePreferredEntryForm", style = "display: inline;" }))
+                {
+                    <input name="playerId" type="hidden" value="@Html.Raw(item.PlayerId)" /><input name="pluginName" type="hidden" value="@Html.Raw(item.PluginName)" />
+                    <button class="linkButton">Delete</button>
+                }
+            </td>
+        </tr>
+    }
+
+</table>
+Notes:
+<ul>
+    <li>only the Guardian mod supports preferreds</li>
+    <li>other mods could be enhanced to support preferreds</li>
+    <li>each server loads preferreds only at mapchange</li>
+</ul>

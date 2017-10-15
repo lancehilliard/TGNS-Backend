@@ -1,0 +1,483 @@
+﻿@model TGNS.Portal.Models.RecordingWatchViewModel
+
+@{
+    ViewBag.Title = "Watch TGNS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<h2>@ViewBag.Title</h2>*@
+
+<div style="position:absolute; top: 0; text-align: center; width: 100%;">
+    Cameras (@Model.CameraOptions.Count()) :
+    @foreach (var cameraOption in Model.CameraOptions.OrderBy(x => x.Text))
+    {
+        <input type="checkbox" value="@cameraOption.Value" style="margin-left: 20px;" id="@(cameraOption.Value)checkbox" />
+        <label for="@(cameraOption.Value)checkbox">@cameraOption.Text</label>
+        @*<script type="text/javascript">
+                $('input[type="checkbox"]').click(function() {
+                    var $checkbox = $(this);
+                    var isChecked = $checkbox.is(':checked');
+                    $checkbox.attr('disabled', 'disabled');
+                    var errorMessage;
+                    $.post('@Url.Action("Set")', {offeringName: $checkbox.data('offeringname'), offeringDisplayName: $checkbox.data('offeringdisplayname'), subscribed:isChecked})
+                        .done(function (data) {
+                            if (!data.success) {
+                                errorMessage = data.msg;
+                            }
+                        })
+                        .fail(function () {
+                            errorMessage = 'There was an error updating your subscription.';
+                        })
+                        .always(function () {
+                            if (errorMessage) {
+                                alert('Error: ' + errorMessage + '\n\nCheckbox will be returned to its original state.');
+                                $checkbox.prop('checked', isChecked ? '' : 'checked');
+                            }
+                            $checkbox.removeAttr('disabled');
+                        });
+                });
+            </script>*@
+    }
+</div>
+
+<div id="players"></div>
+
+<script>
+
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    function getQuerystringSeconds() {
+        var t = getParameterByName('t') || '';
+        var hours = t.match(/(\d+)h/);
+        var minutes = t.match(/(\d+)m/);
+        var seconds = t.match(/(\d+)s/);
+        var result = 0;
+        if (hours) {
+            result += parseInt(hours[1], 10) * 60 * 60;
+        }
+
+        if (minutes) {
+            result += minutes[1] * 60;
+        }
+
+        if (seconds) {
+            result += seconds[1] * 1;
+        }
+        return result;
+    }
+
+    function getQuerystringCameras() {
+        var cameras = getParameterByName('c') || '';
+        return cameras === '' ? [] : cameras.split(',');
+    }
+
+    var $checkboxes = $('input[type="checkbox"]');
+    // 2. This code loads the IFrame Player API code asynchronously.
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    var secondsToAdvance = 0;
+
+    function onYouTubeIframeAPIReady() {
+        if ($checkboxes.size() > 0) {
+            secondsToAdvance = getQuerystringSeconds();
+            var $firstCheckbox = $checkboxes.first();
+            var cameras = getQuerystringCameras();
+            var camerasEnabled = 0;
+            $('#players').hide();
+            setTimeout(function() {
+                $(window).resize();
+                $('#players').show();
+                var iframes = document.getElementsByTagName("iframe");
+                for (var i = 0; i < iframes.length; i++) {
+                    YT.get(iframes[i].id).playVideo();
+                }
+            }, (cameras.length * 1000) + 5000);
+            $.each(cameras, function (index, camera) {
+                var $checkbox = $(':checkbox[value='+camera+']');
+                if ($checkbox.size() > 0) {
+                    var changeTimeout = 1000 * index;
+                    setTimeout(function() {
+                        $checkbox.prop('checked', 'checked').change();
+                    }, changeTimeout);
+                    camerasEnabled = camerasEnabled + 1;
+                }
+            });
+            if (camerasEnabled === 0) {
+                $firstCheckbox.prop('checked', 'checked').change();
+            }
+        } else {
+            alert('Error: no recordings found.');
+        }
+    }
+
+    $(document).ready(function () {
+        var waitForFinalEvent = (function () {
+            var timers = {};
+            return function (callback, ms, uniqueId) {
+                if (!uniqueId) {
+                    uniqueId = "Don't call this twice without a uniqueId";
+                }
+                if (timers[uniqueId]) {
+                    clearTimeout(timers[uniqueId]);
+                }
+                timers[uniqueId] = setTimeout(callback, ms);
+            };
+        })();
+        var getUsableHeight;
+        var getUsableWidth;
+        getUsableHeight = function() {
+            var result = $(window).height() - 70;
+            //return result > getUsableWidth() ? result : getUsableWidth();
+            return result;
+        }
+        getUsableWidth = function() {
+            var result = $(window).width() - 46;
+            //return result > getUsableHeight() ? result : getUsableHeight();
+            return result;
+        }
+
+        //var getDefaultHeight;
+        //var getDefaultWidth;
+        //getDefaultHeight = function () {
+        //    var $checkedCheckboxes = $('input:checked');
+        //    //var multipleCheckboxesAreChecked = $checkedCheckboxes.size() > 1;
+        //    //var result = getUsableHeight();
+        //    //if (multipleCheckboxesAreChecked) {
+        //    //    result = getDefaultWidth() * 0.5625;
+        //    //}
+        //    var result = getDefaultWidth() * 0.5625;
+        //    return result;
+        //}
+        //getDefaultWidth = function () {
+        //    var $checkedCheckboxes = $('input:checked');
+        //    //var multipleCheckboxesAreChecked = $checkedCheckboxes.size() > 1;
+        //    //var result = multipleCheckboxesAreChecked ? getUsableWidth() / 2 : getDefaultHeight() * 1.777777777777778;
+        //    var result = getUsableWidth() / $checkedCheckboxes.size();
+        //    return result;
+        //}
+        var getDefaultHeight;
+        var getDefaultWidth;
+        getDefaultHeight = function () {
+            var $checkedCheckboxes = $('input:checked');
+            var multipleCheckboxesAreChecked = $checkedCheckboxes.size() > 1;
+            //var result = multipleCheckboxesAreChecked ? getDefaultWidth() * 0.5625 : $(window).height() - 70;
+            var result = multipleCheckboxesAreChecked ? getDefaultWidth() * (0.5625 * 0.90) : $(window).height() - 70;
+            return result;
+        }
+        getDefaultWidth = function () {
+            var $checkedCheckboxes = $('input:checked');
+            var multipleCheckboxesAreChecked = $checkedCheckboxes.size() > 1;
+            var result = multipleCheckboxesAreChecked ? ($(window).width() - 46) / 2 : getDefaultHeight() * 1.777777777777778;
+            return result;
+        }
+
+        var redraw = function () {
+            var $checkedCheckboxes = $('input:checked');
+            var multipleCheckboxesAreChecked = $checkedCheckboxes.size() > 1;
+            var playerWidth = getDefaultWidth();
+            var playerHeight = getDefaultHeight();
+            var $uncheckedCheckboxes = $('input:not(:checked)');
+            $.each($('#players').find('iframe'), function (index, player) {
+                var $player = $(player);
+                $player.width(playerWidth).height(playerHeight);
+            });
+            //$('#players').width(getUsableWidth()).height(getUsableHeight());
+            $.each($uncheckedCheckboxes, function (index, checkbox) {
+                var $checkbox = $(checkbox);
+                var videoIdentifier = $checkbox.val();
+                var $player = $('#' + videoIdentifier);
+                $player.remove();
+                var $playerLabel = $('#' + videoIdentifier + 'label');
+                $playerLabel.remove();
+                if ($checkedCheckboxes.size() >= 4) {
+                    $checkbox.attr('disabled', 'disabled');
+                    $checkbox.attr('title', 'No more than 4 cameras may be enabled at a time.');
+                } else {
+                    $checkbox.removeAttr('disabled');
+                    $checkbox.attr('title', '');
+                }
+            });
+            setTimeout(function() {
+
+            }, 2000);
+            $.each($('#players').find('iframe'), function (index, player) {
+                var $player = $(player);
+                var videoIdentifier = $player.attr('id');
+                var $playerLabel = $('label[for="' + videoIdentifier + 'checkbox"]');
+                var cameraName = $playerLabel.text();
+                var firstPlayerLeftOffset = 0;
+                //if (index === 0 && $('#players').children().size() > 1) {
+                //    firstPlayerLeftOffset = -3;
+                //}
+                var $label = $('<div id="' + videoIdentifier + 'label" style="position: absolute; color: #333333; font-size: smaller; padding-left: 3px; padding-right: 3px; margin: 0px; background-color: black;"></div>').css('top', $player.position().top + 1).css('left', $player.position().left + 100 + firstPlayerLeftOffset).text(cameraName);
+                if (cameraName.indexOf(' (M)') !== -1 || cameraName.indexOf(' (MC)') !== -1) {
+                    $label.css('color', '#163D57');
+                }
+                else if (cameraName.indexOf(' (A)') !== -1 || cameraName.indexOf(' (AC)') !== -1) {
+                    $label.css('color', '#867D48');
+                }
+                //if ($label.width() > 100) {
+                //    $label.width(100);
+                //}
+                //if ($label.height() > 20) {
+                //    $label.height(20);
+                //}
+                $('#players').append($label);
+            });
+        }
+        $checkboxes.change(function () {
+            var $checkbox = $(this);
+            if ($checkbox.prop('checked')) {
+                var videoIdentifier = $checkbox.val();
+                $('#players').append($('<div id="' + videoIdentifier + '" style="display:inline-block; padding: 3px; margin-left: 0px; border: 1px solid #222222;"></div>'));
+                new YT.Player(videoIdentifier, {
+                    width: getDefaultWidth(),
+                    height: getDefaultHeight(),
+                    videoId: videoIdentifier,
+                    events: {
+                        'onReady': function onPlayerReady(event) {
+                            // console.log(videoIdentifier + ': READY');
+                            var playerInstance = event.target;
+                            if (secondsToAdvance > 0) {
+                                playerInstance.seekTo(secondsToAdvance, true);
+                            }
+                            playerInstance.seekTo(.1, true);
+                            playerInstance.pauseVideo();
+                            var $player = $('#' + playerInstance.a.id);
+                            $player.bind('mousewheel DOMMouseScroll', function (mousewheelEvent) {
+                                var volume = playerInstance.getVolume();
+                                var volumeDelta = 10 * (mousewheelEvent.originalEvent.wheelDelta > 0 || mousewheelEvent.originalEvent.detail < 0 ? 1 : -1);
+                                var newVolume = volume + volumeDelta;
+                                newVolume = newVolume >= 0 ? newVolume : 0;
+                                newVolume = newVolume <= 100 ? newVolume : 100;
+                                playerInstance.setVolume(newVolume);
+                            });
+                            $(window).resize();
+                        },
+                        'onStateChange': function onPlayerStateChange(event) {
+                            //var $firstPlayer = $('#players').children().first();
+                            //var $secondPlayer = $('#players').children().eq(1);
+                            //var firstPlayerInstance = YT.get($firstPlayer.attr('id'));
+                            //var secondPlayerInstance = YT.get($secondPlayer.attr('id'));
+                            //var eventTargetIsFirstPlayerInstance = event.target === firstPlayerInstance;
+                            var stateDescription = "Unstarted";
+                            if (event.data === YT.PlayerState.ENDED) {
+                                stateDescription = "Ended";
+                            } else if (event.data === YT.PlayerState.PLAYING) {
+                                stateDescription = "Playing";
+                                //if (secondPlayerInstance) {
+                                //    if (eventTargetIsFirstPlayerInstance) {
+                                //        if (firstPlayerInstance.getCurrentTime() !== secondPlayerInstance.getCurrentTime()) {
+                                //            secondPlayerInstance.seekTo(firstPlayerInstance.getCurrentTime(), true);
+                                //        }
+                                //        secondPlayerInstance.playVideo();
+                                //    } else {
+                                //        if (firstPlayerInstance.getCurrentTime() !== secondPlayerInstance.getCurrentTime()) {
+                                //            secondPlayerInstance.seekTo(firstPlayerInstance.getCurrentTime(), true);
+                                //            firstPlayerInstance.pauseVideo();
+                                //        } else {
+                                //            firstPlayerInstance.playVideo();
+                                //        }
+                                //    }
+                                //}
+                            } else if (event.data === YT.PlayerState.PAUSED) {
+                                stateDescription = "Paused";
+                            } else if (event.data === YT.PlayerState.BUFFERING) {
+                                stateDescription = "Buffering";
+                                //if (eventTargetIsFirstPlayerInstance) {
+                                //    if (secondPlayerInstance) {
+                                //        secondPlayerInstance.pauseVideo();
+                                //    }
+                                //} else {
+                                //    firstPlayerInstance.pauseVideo();
+                                //}
+                            } else if (event.data === YT.PlayerState.CUED) {
+                                stateDescription = "Cued";
+                            }
+                        }
+                    },
+                    playerVars: { rel: 0 }
+                });
+                // $('#' + videoIdentifier).height('400px').width('400px');
+                //player.loadVideoById({
+                //    videoId: videoIdentifier,
+                //    startSeconds: player.getCurrentTime()
+                //});
+            }
+
+            var $labels = $('#players').find('[id$="label"]');
+            $labels.remove();
+            redraw();
+        });
+        $(window).resize(function () {
+            var $labels = $('#players').find('[id$="label"]');
+            $labels.remove();
+            waitForFinalEvent(function () {
+                redraw();
+            }, 500, "redraw after resize");
+        });
+        $(window).resize();
+
+        function endsWith(str, suffix) {
+            return str.indexOf(suffix, str.length - suffix.length) !== -1;
+        }
+
+        function replaceAll(str, find, replace) {
+            return str.replace(new RegExp(find, 'g'), replace);
+        }
+
+        function updateQueryStringParameter(uri, key, value) {
+            var result = "";
+            var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+            var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+            if (uri.match(re)) {
+                if (value !== null) {
+                    result = uri.replace(re, '$1' + key + "=" + value + '$2');
+                } else {
+                    result = uri.replace(re, separator);
+                }
+            }
+            else {
+                if (value !== null) {
+                    result = uri + separator + key + "=" + value;
+                } else {
+                    result = uri;
+                }
+            }
+            result = replaceAll(result, "&&", "&");
+            if (endsWith(result, "&")) {
+                result = result.substring(0, result.length - 1);
+            }
+            return result;
+        }
+
+        $('#shareLink').popover({
+            html: true,
+            placement: 'top',
+            content: function () {
+                var $content = $('<div style="color: red;">Error: No players are visible!</div>');
+                var $playerIframes = $('#players').find('iframe');
+                if ($playerIframes.size() > 0) {
+                    var fromStartUrl = updateQueryStringParameter(location.href, 't', null);
+                    var c = $.map($('#players').find('iframe'), function (playerIframe, index) {
+                        return playerIframe.id;
+                    }).join(',');
+                    fromStartUrl = updateQueryStringParameter(fromStartUrl, 'c', c);
+
+                    var firstPlayer = YT.get($playerIframes.first().attr('id'));
+                    var currentTime = Math.floor(firstPlayer.getCurrentTime());
+                    var hours = parseInt(currentTime / 3600) % 24;
+                    var minutes = parseInt(currentTime / 60) % 60;
+                    var seconds = currentTime % 60;
+                    var t = (hours > 0 ? hours + 'h' : '') + (minutes > 0 ? minutes + 'm' : '') + seconds + 's';
+                    var fromTimeLabel = (hours > 0 ? hours + ':' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+                    var fromTimeUrl = updateQueryStringParameter(fromStartUrl, 't', t);
+                    $content = $('<div><div><p>Selected cameras are shared.</p></div><div style="font-weight: bold;">From Beginning</div><div><input style="width: 200px;" value="' + fromStartUrl + '" onfocus="this.select();"/></div><div style="font-weight: bold;">From ' + fromTimeLabel + '</div><div><input style="width: 200px;" type="text" value="' + fromTimeUrl + '" onfocus="this.select();"/></div></div>');
+                }
+                return $content.html();
+            }
+        });
+
+        $('html').on('click', function (e) {
+            if ((typeof $(e.target).data('original-title') == 'undefined') && $(e.target).closest('.popover').size() === 0) {
+                $('[data-original-title]').popover('hide');
+            }
+        });
+
+        var synchronizePlayers = function () {
+            var updateIframe = function(index) {
+                try {
+                    var iframes = document.getElementsByTagName("iframe");
+                    var pp = YT.get(iframes[0].id);
+                    var ppCurrentTime = pp.getCurrentTime();
+                    var p = YT.get(iframes[index].id);
+                    var diff = ppCurrentTime - p.getCurrentTime();
+                    console.log('diff: ' + diff);
+                    if (Math.abs(diff) > 0.15) {
+                        p.seekTo(ppCurrentTime, true);
+                    }
+                }
+                catch (err) { }
+            }
+            setTimeout(function () { updateIframe(1); }, 500);
+            setTimeout(function () { updateIframe(2); }, 1000);
+            setTimeout(function () { updateIframe(3); }, 1500);
+
+
+
+            //var playbackQuality = 'highres';
+            //if (iframes.length > 1) {
+            //    playbackQuality = 'hd720';
+            //    if (iframes.length > 2) {
+            //        playbackQuality = 'large';
+            //    }
+            //}
+            //// player.setPlaybackQuality($(this).val());
+            //var primaryPlayerCurrentTime = 0;
+            //for (var i = 0; i < iframes.length; i++) {
+            //    var primaryPlayer = YT.get(iframes[0].id);
+            //    if (primaryPlayerCurrentTime === 0 && typeof (primaryPlayer.getPlayerState) === 'function' && primaryPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+            //        primaryPlayerCurrentTime = primaryPlayer.getCurrentTime();
+            //        primaryPlayer.setPlaybackQuality(playbackQuality);
+            //        console.log('--- primaryPlayerCurrentTime: ' + primaryPlayerCurrentTime);
+            //    }
+            //    if (i > 0 && primaryPlayerCurrentTime > 0) {
+            //        try {
+            //            var secondaryPlayer = YT.get(iframes[i].id);
+            //            secondaryPlayer.setPlaybackQuality(playbackQuality);
+            //            var secondaryPlayerState = secondaryPlayer.getPlayerState();
+            //            var secondaryPlayerCurrentTime = secondaryPlayer.getCurrentTime();
+            //            var currentTimeDifference = primaryPlayerCurrentTime - secondaryPlayerCurrentTime;
+            //            console.log('currentTimeDifference: ' + currentTimeDifference);
+            //            if (Math.abs(currentTimeDifference) > .250 && secondaryPlayerState !== YT.PlayerState.BUFFERING) {
+            //                secondaryPlayer.seekTo(primaryPlayerCurrentTime, true);
+            //            }
+            //        }
+            //        catch(err) {}
+            //    }
+            //}
+            setTimeout(synchronizePlayers, 2000);
+        }
+        synchronizePlayers();
+
+    });
+</script>
+
+<div style="position: absolute; bottom: 0;">
+    <p style="float: left"><span id="shareLink" class="shareLink">Share This Game</span> | @Html.ActionLink("Watch Another Game", "Index") | @Html.ActionLink("Manage Your Recordings", "Add", "Recordings")</p>
+</div>
+
+@section HeadStyle
+{
+    html, body {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    padding-top: 5px;
+    display: table;
+    overflow: hidden;
+    }
+    .container {
+    display: table-cell;
+    max-width: 100%;
+    text-align: center;
+    vertical-align: middle;
+    }
+    .navbar {
+    display: none;
+    }
+    footer {
+    display: none;
+    }
+}

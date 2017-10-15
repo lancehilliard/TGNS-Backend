@@ -1,0 +1,23 @@
+﻿@using TGNS.Core.Data
+@model IEnumerable<TGNS.Core.Data.IGuardianData>
+
+@{
+    ViewBag.Title = "Guardians";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Opted-in Guardians with BKA</h2>
+<p>By recent games while opted-in (appointed or not).</p>
+<table class="table table-bordered table-striped" style="width: auto;">
+    <tr>
+        <th>Player</th>
+        <th>Last Opted In</th>
+    </tr>
+    @foreach (var guardianData in Model)
+    {
+        <tr>
+            <td>@Html.Encode(guardianData.BetterKnownAs) (<span>@Html.Encode(guardianData.PlayerId)</span>)</td>
+            <td>@Html.Encode(guardianData.LastOptedIn.ToShortDateString())</td>
+        </tr>
+    }
+</table>

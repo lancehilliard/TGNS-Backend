@@ -1,0 +1,188 @@
+﻿@model TGNS.Portal.Models.BucketsViewModel
+
+@{
+    ViewBag.Title = "Buckets";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section documentready
+{
+    var searchablePlayers = new Bloodhound({
+        datumTokenizer: function (d) { return d.name; },
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: '/Buckets/SearchPlayers?q=%QUERY'
+    });
+    
+    searchablePlayers.initialize();
+    
+    $('#foo .typeahead').droppable({
+        drop: function( event, ui ) {
+            var draggedItem = $(ui.draggable);
+            var playerName = draggedItem.data('playername');
+            var playerId = draggedItem.data('playerid');
+            var parentDiv = $(this).closest('div');
+            var playerNameInput = parentDiv.find('input[name="playerName"]');
+            var playerIdInput = parentDiv.find('input[name="playerId"]');
+            playerNameInput.val(playerName);
+            playerIdInput.val(playerId);
+        }
+    });
+
+    $('#foo .typeahead').typeahead(null, {
+        displayKey: 'name',
+        source: searchablePlayers.ttAdapter()
+    });
+    
+    $('#foo .typeahead').on('typeahead:selected', function(evt, item) {
+        $(evt.currentTarget).closest('div').find('input[name="playerId"]').val(item.id);
+    });
+    
+    $('.removeablePlayer, .addablePlayer').draggable({
+        helper: 'clone',
+        revert : function(event, ui) { return !event; }
+    });
+
+    $('.removeablePlayer').click(function(ev) {
+        ev.preventDefault();
+        var link = $(ev.currentTarget);
+        var form = link.closest('form');
+        var playerName = link.data('playername');
+        var playerId = link.data('playerid');
+        form.prepend('<input type="hidden" name="playerName" value="'+playerName+'" />');
+        form.prepend('<input type="hidden" name="playerId" value="'+playerId+'" />');
+        form.submit();
+    });
+
+}
+
+<h2>Buckets</h2>
+
+<table class="table">
+    <tr>
+        <th>Commanders @(Html.Raw(string.Format(@"({0})", Model.CommPlayers.Count())))</th>
+        <th>BestPlayers @(Html.Raw(string.Format(@"({0})", Model.BestPlayers.Count())))</th>
+        <th>BetterPlayers @(Html.Raw(string.Format(@"({0})", Model.BetterPlayers.Count())))</th>
+        <th>GoodPlayers @(Html.Raw(string.Format(@"({0})", Model.GoodPlayers.Count())))</th>
+        <th>RecentPlayers @(Html.Raw(string.Format(@"({0})", Model.RecentPlayers.Count())))</th>
+    </tr>
+    <tr>
+        <td>e.g. wyz, aero, rad, etc<br />(will overlap other lists)</td>
+        <td>upper: josh, inzo, happy, etc<br />lower: beats Better</td>
+        <td>upper: mind, denalb, zek, etc<br />lower: beats Good</td>
+        <td>upper: conc, farva, etc<br />lower: roland, bikecat, etc</td>
+        <td>(have played in last 2 weeks)<br/>(and not in any bucket)</td>
+    </tr>
+    <tr>
+        <td>
+@using (Html.BeginForm("Add", "Buckets", FormMethod.Post, new { id = "AddCommanderForm", name = "AddCommanderForm" }))
+{
+    <input type="hidden" name="bucketName" value="Commanders"/>
+    <div id="foo">
+        <input name="playerName" class="typeahead" type="text" placeholder="Player Name" /><br /><input name="playerId" class="typeahead" type="text" placeholder="NS2ID" />
+    </div>
+    <input type="submit" value="Add"/>
+}
+        </td>
+        <td>
+@using (Html.BeginForm("Add", "Buckets", FormMethod.Post, new { id = "AddBestForm", name = "AddBestForm" }))
+{
+    <input type="hidden" name="bucketName" value="BestPlayers" />
+    <div id="foo">
+        <input name="playerName" class="typeahead" type="text" placeholder="Player Name" /><br /><input name="playerId" class="typeahead" type="text" placeholder="NS2ID" />
+    </div>
+    <input type="submit" value="Add" />
+}
+        </td>
+        <td>
+@using (Html.BeginForm("Add", "Buckets", FormMethod.Post, new { id = "AddBetterForm", name = "AddBetterForm" }))
+{
+    <input type="hidden" name="bucketName" value="BetterPlayers" />
+    <div id="foo">
+        <input name="playerName" class="typeahead" type="text" placeholder="Player Name" /><br /><input name="playerId" class="typeahead" type="text" placeholder="NS2ID" />
+    </div>
+    <input type="submit" value="Add" />
+}
+        </td>
+        <td>
+            @using (Html.BeginForm("Add", "Buckets", FormMethod.Post, new { id = "AddGoodForm", name = "AddGoodForm" }))
+            {
+                <input type="hidden" name="bucketName" value="GoodPlayers" />
+                <div id="foo">
+                    <input name="playerName" class="typeahead" type="text" placeholder="Player Name" /><br /><input name="playerId" class="typeahead" type="text" placeholder="NS2ID" />
+                </div>
+                <input type="submit" value="Add" />
+            }
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+@using (Html.BeginForm("Remove", "Buckets", FormMethod.Post, new { id = "RemoveCommanderForm", name = "RemoveCommanderForm" }))
+{
+    <input type="hidden" name="bucketName" value="Commanders"/>
+     foreach (var player in Model.CommPlayers)
+     {
+         @(Html.Raw(string.Format(@"<a class=""removeablePlayer"" href=""javascript:;"" title=""Remove {0} from Commanders bucket..."" data-playername=""{0}"" data-playerid=""{1}"">{0} ({1})</a>", player.Name, player.Id)))
+         <br/>
+     }
+}
+        </td>
+        <td>
+@using (Html.BeginForm("Remove", "Buckets", FormMethod.Post, new { id = "RemoveBestForm", name = "RemoveBestForm" }))
+{
+    <input type="hidden" name="bucketName" value="BestPlayers" />
+    foreach (var player in Model.BestPlayers)
+    {
+        @(Html.Raw(string.Format(@"<a class=""removeablePlayer"" href=""javascript:;"" title=""Remove {0} from BestPlayers bucket..."" data-playername=""{0}"" data-playerid=""{1}"">{0} ({1})</a>", player.Name, player.Id)))
+        <br />
+    }
+}
+        </td>
+        <td>
+            @using (Html.BeginForm("Remove", "Buckets", FormMethod.Post, new { id = "RemoveBetterForm", name = "RemoveBetterForm" }))
+            {
+                <input type="hidden" name="bucketName" value="BetterPlayers" />
+                foreach (var player in Model.BetterPlayers)
+                {
+                    @(Html.Raw(string.Format(@"<a class=""removeablePlayer"" href=""javascript:;"" title=""Remove {0} from BetterPlayers bucket..."" data-playername=""{0}"" data-playerid=""{1}"">{0} ({1})</a>", player.Name, player.Id)))
+                    <br />
+                }
+            }
+        </td>
+        <td>
+            @using (Html.BeginForm("Remove", "Buckets", FormMethod.Post, new { id = "RemoveGoodForm", name = "RemoveGoodForm" }))
+            {
+                <input type="hidden" name="bucketName" value="GoodPlayers" />
+                foreach (var player in Model.GoodPlayers)
+                {
+                    @(Html.Raw(string.Format(@"<a class=""removeablePlayer"" href=""javascript:;"" title=""Remove {0} from GoodPlayers bucket..."" data-playername=""{0}"" data-playerid=""{1}"">{0} ({1})</a>", player.Name, player.Id)))
+                    <br />
+                }
+            }
+        </td>
+        <td>
+                @foreach (var player in Model.RecentPlayers)
+                {
+                    @(Html.Raw(string.Format(@"<a class=""addablePlayer"" href=""javascript:;"" data-playername=""{0}"" data-playerid=""{1}"">{0} ({1})</a>", player.Name, player.Id)))
+                    <br />
+                }
+        </td>
+    </tr>
+</table>
+
+<table>
+    @foreach (var message in Model.Logs)
+    {
+        <tr>
+            <td>
+                @(Html.Raw(string.Format(@"{0}", message)))
+            </td>
+        </tr>
+    }
+</table>
+
+@section scripts
+{
+    @Scripts.Render("~/assets/js/typeahead.bundle.min.js")
+    @Scripts.Render("~/assets/js/jquery-ui-1.10.4.custom.min.js")
+}

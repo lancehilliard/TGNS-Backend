@@ -1,0 +1,50 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "TGNS Replay Add Helper Userscript";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>TGNS Replay Add Helper Userscript</h2>
+
+<h3>About</h3>
+<p>Once you've finished recording with @Html.ActionLink("TGNS Recording Helper", "RecordingHelper", "Replay") (TRH), it's time to upload to YouTube. When the YouTube upload is finished, you can @Html.ActionLink("add your recordings to Replay using the 'Add' form", "Add", "Recordings").</p>
+
+<p>Or, you can automate the Add operation in Replay when each YouTube upload is finished, such that uploading is your final manual step when adding to Replay! This is done with the use of a <a href="https://wiki.greasespot.net/User_script">userscript</a> which automates the Replay Add every time you upload to YouTube a video which was recorded via TRH.</p>
+
+<h3>Getting Started</h3>
+
+<p>To use the TGNS Replay Add Helper Userscript (these instructions are for <a href="https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en">Tampermonkey for Chrome</a> -- if you're using <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/">Greasemonkey for Firefox</a>, try it and give us feedback!):</p>
+<ol>
+    <li><strong>Install <a href="https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en">Tampermonkey for Chrome</a>: </strong>This browser extension will run the userscript when you upload TRH-recorded videos to YouTube</li>
+    <li><strong>Add the userscript -- <a href="/assets/userscripts/TgnsReplayAddHelper.user.js">TGNS Replay Add Helper</a> </strong> : Make sure you're OK with the necessary permissions<br/>Note: you <em>might</em> have to restart your browser when you first install the userscript.</li>
+    <li><strong>Log into the TGNS Portal : </strong>Once you login to TGNS Portal, you may keep that TGNS Portal tab open or close it (your choice)</li>
+    <li>
+        <strong>Upload to YouTube a video recorded via TGNS Recording Helper : </strong>Make sure your default upload settings allow public or unlisted access to the video
+        <table style="margin-left: 20px; margin-top: 10px; margin-bottom: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        Upload <strong>without</strong> userscript:
+                    </div>
+                    <div>
+                        <img src="https://i.imgur.com/s3pNa2s.jpg" style="border: 1px solid black;" />
+                    </div>
+                </td>
+                <td style="padding-left: 20px;">
+                    <div>
+                        Upload <strong>with</strong> userscript:
+                    </div>
+                    <div>
+                        <img src="https://i.imgur.com/NqxE9xW.jpg" style="border: 1px solid black;" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </li>
+    <li><strong>You're finished! : </strong> Uploading the TRH-recorded video to YouTube has automatically added it to Replay! Easy!</li>
+</ol>
+<p>Note: this userscript only adds to Replay your YouTube uploads whose title begins with a game ID (that number at the beginning of the TRH-generated filename) followed by the word 'TGNS'. So, you can upload other videos to your YouTube account without worrying about this userscript trying to add them to Replay -- it won't even try.</p>
+<p>Consider uploading <em>during</em> gameplay by throttling your Youtube tab's upload speed using <a href="https://developers.google.com/web/tools/chrome-devtools/profile/network-performance/network-conditions?hl=en">Chrome Dev Tools</a>.</p>
+<p>If you have any questions about or recommendations for this userscript, please join us in our <a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-general-discussion/136554-tgns-replay-add-helper-userscript">TGNS Replay Add Helper Userscript forum thread</a>!</p>
+<p>Thanks for contributing to @Html.ActionLink("Replay", "Index")!</p>

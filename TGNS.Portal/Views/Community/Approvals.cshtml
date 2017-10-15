@@ -1,0 +1,23 @@
+﻿@model System.Collections.Generic.IEnumerable<string>
+
+<div style="margin-top: 5px; color: #999999;">
+        @for (var i = 0; i < Model.Count(); i++)
+        {
+            var approvalReason = Model.ElementAt(i);
+            if (i%2 == 0)
+            {
+                @: <span style="white-space: nowrap;">
+            }
+            @: <span style="margin-right: 7px;">
+            @:     "@(Html.Raw(approvalReason))"...
+            @: </span>
+            if (i%2 != 0)
+            {
+                if (i == Model.Count() - 1)
+                {
+                    @:(@Html.ActionLink("more", "Index", "Community", new {style = "color: #999999;"}))
+                }
+                @: </span>
+            }
+    }
+</div>

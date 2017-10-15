@@ -1,0 +1,59 @@
+﻿@model IEnumerable<TGNS.Portal.Classes.ISpecBetsData>
+
+@{
+    ViewBag.Title = string.Format("SpecBets Top {0}", Model.Count());
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>Bet on kill likelihoods during games just by chatting as a Spectator.</p>
+
+<table>
+    <tr>
+        <td>Chat:</td>
+        <td style="font-weight: bold;">bet &lt;killer&gt; &lt;victim&gt; &lt;amount&gt;</td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">Ex:</td>
+        <td>bet wyz brian 5</td>
+    </tr>
+</table>
+
+<p>Bets and payouts are recorded in real-time as kills happen during play. Update this page anytime to see the latest standings!</p>
+
+<table class="table table-bordered table-striped" style="width: auto;">
+    <tr>
+        <th rowspan="2">&nbsp;</th>
+        <th rowspan="2" style="vertical-align: bottom;">Gambler</th>
+        <th rowspan="2" style="vertical-align: bottom;">Total Earnings</th>
+        <th rowspan="2" style="vertical-align: bottom;">Payout<br/>Rate</th>
+        <th colspan="3">Bets</th>
+        <th colspan="3">Payouts</th>
+    </tr>
+    <tr>
+        <th>Count</th>
+        <th>Max</th>
+        <th>Average</th>
+        <th>Count</th>
+        <th>Max</th>
+        <th>Average</th>
+    </tr>
+    @for (int i = 0; i < Model.Count(); i++)
+    {
+        var specBetsTotal = Model.ElementAt(i);
+        var position = i + 1;
+        <tr>
+            <td style="text-align: right;">@position</td>
+            <td style="white-space: nowrap">@Html.Encode(specBetsTotal.Player.Name) (<span>@specBetsTotal.Player.PlayerId</span>)</td>
+            <td>@(string.Format("{0:n0}", specBetsTotal.Total))</td>
+            <td>@(string.Format("{0:n2}%", specBetsTotal.PayoutRate * 100))</td>
+            <td>@(string.Format("{0:n0}", specBetsTotal.BetCount))</td>
+            <td>@(string.Format("{0:n0}", specBetsTotal.BetMax))</td>
+            <td>@(string.Format("{0:n2}", specBetsTotal.BetAverage))</td>
+            <td>@(string.Format("{0:n0}", specBetsTotal.PayoutCount))</td>
+            <td>@(string.Format("{0:n0}", specBetsTotal.PayoutMax))</td>
+            <td>@(string.Format("{0:n2}", specBetsTotal.PayoutAverage))</td>
+        </tr>
+    }
+</table>

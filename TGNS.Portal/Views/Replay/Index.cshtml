@@ -1,0 +1,291 @@
+﻿@using SteamKit2.GC.TF2.Internal
+@model TGNS.Portal.Models.RecordingIndexViewModel
+
+@{
+    ViewBag.Title = "TGNS Replay";
+    var viewCountEstimate = Math.Floor(Model.VideoStatistics.Sum(x => x.ViewCount) / 50.0) * 50.0;
+    var playerCountEstimate = Math.Floor(Model.DistinctPlayerCount / 50.0) * 50.0;
+    var totalGamesDurationInHoursEstimate = Math.Floor((Model.TotalGamesDurationInSeconds / 60 / 60) / 10.0) * 10.0;
+    var playerId = string.Format("{0}", HttpContext.Current.Items["PlayerId"]);
+    playerId = playerId != "0" ? playerId : string.Empty;
+}
+
+<h2>TGNS Replay</h2>
+
+<p>Watch TGNS gameplay from multiple synchronized cameras.</p>
+
+<div style="display: flex;">
+    <div style="flex: 0 0 50%;">
+        <div id="filters" style="text-align: right; margin-bottom: -26px; margin-right: 2px;">
+            <select id="stakeholderFilter">
+                <option value="">All</option>
+                <option value="@playerId">My</option>
+            </select>
+            games with 
+            <select id="ratingFilter">
+                <option value="">any</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+            </select>
+            rating and
+            <select id="durationFilter">
+                <option value="">any</option>
+                <option value="10">10+</option>
+                <option value="15">15+</option>
+                <option value="30">30+</option>
+                <option value="45">45+</option>
+                <option value="60">60+</option>
+            </select>
+            duration.
+        </div>
+
+        <ul class="tab">
+            <li><a href="javascript:void(0)" class="tablinks" onclick="showGames(event, 'ns2')" id="ns2Tab">NS2</a></li>
+            <li><a href="javascript:void(0)" class="tablinks" onclick="showGames(event, 'Infested')">Infested</a></li>
+        </ul>
+        <div id="ns2" class="tabcontent">
+            <table class="display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>ServerName</th>
+                        <th>StartTimeSeconds</th>
+                        <th>Map - Cameras</th>
+                        <th>Map (Name Only)</th>
+                        <th><span class="glyphicon glyphicon-calendar"></span></th>
+                        <th>RowCreated</th>
+                        <th><span class="glyphicon glyphicon-time"></span></th>
+                        <th>DurationInSeconds</th>
+                        <th>RecordingPlayerIds</th>
+                        <th>PlayingPlayerIds</th>
+                        <th>RatingCount</th>
+                        <th>Rating</th>
+                        <th>RatingAverage</th>
+                        <th>Cameras</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div id="Infested" class="tabcontent">
+            <table class="display" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th>ServerName</th>
+                    <th>StartTimeSeconds</th>
+                    <th>Map</th>
+                    <th>Map (Name Only)</th>
+                    <th><span class="glyphicon glyphicon-calendar"></span></th>
+                    <th>RowCreated</th>
+                    <th><span class="glyphicon glyphicon-time"></span></th>
+                    <th>DurationInSeconds</th>
+                    <th>RecordingPlayerIds</th>
+                    <th>PlayingPlayerIds</th>
+                    <th>RatingCount</th>
+                    <th>Rating</th>
+                    <th>Cameras</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <div style="text-align: center;">
+            <span style="text-decoration: underline;">Underline: you played</span> |
+            <span style="font-style: italic;">Italic: has your camera</span> |
+            <span style="font-weight: bold;">Bold: has multiple cameras</span>
+        </div>
+    </div>
+    <div style="flex: 1; margin-left: 7px;">
+        <h3 style="margin-top: 0;">What is TGNS Replay?</h3>
+        <p>TGNS Replay is a coordinated effort by TGNS players and spectators to enable the viewing of past games from multiple synchronized cameras. It's a work in progress, and you can help.</p>
+        <h3>Contribute to TGNS Replay</h3>
+        <p>@Html.ActionLink("Add your cameras to TGNS Replay!", "Add", "Recordings") Our <strong>@Html.ActionLink("TGNS Replay Contributors Guide", "ContributorsGuide")</strong> has step-by-step directions for how to get started. Once you're setup, adding recordings takes just a few seconds per game you play. Earn @Html.ActionLink("Karma", "Index", "Karma") and help make this site even better for everyone!</p>
+        <p>And you can contribute just by playing on TGNS! So far, <strong>@(string.Format("{0:n0}", playerCountEstimate))+ distinct players</strong> have played in Replay-captured games! Thanks, everybody! :)</p>
+        <h3>Watch TGNS Games</h3>
+        <p>Watch great TGNS games via whatever cameras you and others have added! These camera perspectives present <strong>@(string.Format("{0:n0}", totalGamesDurationInHoursEstimate))+ hours of TGNS gameplay</strong> with <strong>@(string.Format("{0:n0}", viewCountEstimate))+ combined views so far</strong> -- watching NS2 is a great way to learn more about the game, and it's fun, too!</p>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    @* http://stackoverflow.com/a/1987545/116895 *@
+    $.fn.stars = function () {
+        return $(this).each(function () {
+            // Get the value
+            var val = parseFloat($(this).data('value'));
+
+            // If you want to restrict the stars to only half or quarter star sizes, add one of these rows before the var size row:
+            //val = Math.round(val * 4) / 4; /* To round to nearest quarter */
+            //val = Math.round(val * 2) / 2; /* To round to nearest half */
+
+            // Make sure that the value is in 0 - 5 range, multiply to get width
+            var size = Math.max(0, (Math.min(5, val))) * 16;
+            // Create stars holder
+            var $span = $('<span />').width(size);
+            // Replace the numerical value with stars
+            $(this).html($span);
+        });
+    }
+
+    function showGames(evt, gameMode) {
+        // Declare all variables
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the link that opened the tab
+        tabcontent = document.getElementById(gameMode);
+        showGamesData($(tabcontent).find('table'), gameMode);
+        tabcontent.style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    var playerId = '@playerId';
+
+    function showGamesData($table, gameMode) {
+        if (!$.fn.dataTable.isDataTable($table)) {
+            var getStyle = function (row) {
+                var result = "";
+                if (playerId !== '' && (',' + row[8] + ',').indexOf(',' + playerId + ',') >= 0) {
+                    result += "font-style: italic;";
+                }
+                if (row[8].indexOf(',') >= 0) {
+                    result += "font-weight: bold;";
+                }
+                if (playerId !== '' && (',' + row[9] + ',').indexOf(',' + playerId + ',') >= 0) {
+                    result += "text-decoration: underline;";
+                }
+                return result;
+            }
+            var dataTable = $table.DataTable({
+                "ajax": '@Url.Action("ReplayData")?gameMode=' + gameMode,
+                "aoColumns": [
+                    { "bSortable": false, "bSearchable": false, "bVisible": false },
+                    { "bSortable": false, "bSearchable": false, "bVisible": false },
+                    { "bSortable": true },
+                    { "bSortable": false, "bSearchable": false, "bVisible": false },
+                    { "bSortable": true },
+                    { "bSortable": false, "bSearchable": false, "bVisible": false },
+                    { "bSortable": true },
+                    { "bSortable": false, "bSearchable": false, "bVisible": false },
+                    { "bSortable": false, "bSearchable": false, "bVisible": false },
+                    { "bSortable": false, "bSearchable": false, "bVisible": false },
+                    { "bSortable": false, "bSearchable": false, "bVisible": false },
+                    { "bSortable": true, "bVisible": gameMode === 'ns2', "iDataSort": 12 },
+                    { "bSortable": false, "bSearchable": false, "bVisible": false},
+                    { "bSortable": false, "bSearchable": false, "bVisible": false }
+                ],
+                "columnDefs": [
+                    { "orderData": 3, "targets": 2 },
+                    { "orderData": 5, "targets": 4 },
+                    { "orderData": 7, "targets": 6 },
+                    {
+                        "targets": [4, 6],
+                        "render": function (data, type, row) {
+                            return '<span style="' + getStyle(row) + '">' + data + '</span>';
+                        }
+                    },
+                    {
+                        "targets": [2],
+                        "render": function (data, type, row) {
+                            return '<span style="' + getStyle(row) + '"><a href="@(Url.Action("Watch", "Replay"))?serverName=' + row[0] + '&startTimeSeconds='+ row[1] +'" target="_blank">' + data + (gameMode === 'ns2' ? ' - ' + row[13] : '') + '</a></span>';
+                        }
+                    },
+                    {
+                        "targets": [11],
+                        "render": function (data, type, row) {
+                            // console.log(row[0]);
+                            // <span class="stars" title="(Math.Round(game.RatingsAverage, 2)) rating average according to game.RatingsCount players">(game.RatingsAverage)</span>
+                            return data !== '0' ? '<span style="position: absolute; color: #AAAAAA; margin-left: 82px; margin-top: -1px;">' + row[10] + '</span><span class="stars" title="' + (data * 1).toFixed(2) + ' rating average according to ' + row[10] + ' players" data-value="' + data + '"></span>' : '';
+                            // return data + row[10];
+                        }
+                    }
+                ],
+                "order": [[4, "desc"]],
+                "drawCallback": function (settings) {
+                    var api = this.api();
+                    $('span.stars').stars();
+                },
+                "language": {
+                    "loadingRecords": "Fetching games. Just a moment...",
+                    "infoEmpty": "No games found",
+                    "infoFiltered": "(filtered from _MAX_)",
+                    "lengthMenu": "Show _MENU_ games",
+                    "zeroRecords": "No matching games found. Try a different filter/search.",
+                    searchPlaceholder: "case-sensitive"
+                },
+                "lengthMenu": [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"]],
+                "bInfo" : false,
+                "search": {
+                    "caseInsensitive": false
+                }
+            });
+            $('#filters select').change(function () {
+                if ($(this).find('option:selected').text() === 'My' && playerId === '') {
+                    $(this).val('');
+                    alert('Sign in using your Steam credentials to filter to your games only.');
+                }
+                dataTable.draw();
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        var games = new Array();
+        $.each($('tr[data-servername][data-starttimeseconds]'), function (index, row) {
+            var $row = $(row);
+            var game = { "serverName": $row.data('servername'), "startTimeSeconds": $row.data('starttimeseconds') }
+            games.push(game);
+        });
+        var gamesJson = JSON.stringify(games);
+        $.ajax({
+            url: '@Url.Action("Get", "Recordings")',
+            type: 'POST',
+            traditional: true,
+            dataType: 'json',
+            data: gamesJson,
+            contentType: 'application/json',
+            success: function (data) {
+                if (data.success) {
+                    $.each(data.recorded, function (index, game) {
+                        $('tr[data-servername="' + game.serverName + '"][data-starttimeseconds="' + game.startTimeSeconds + '"]').css('font-style', 'italic');
+                    });
+                    $.each(data.played, function (index, game) {
+                        $('tr[data-servername="' + game.serverName + '"][data-starttimeseconds="' + game.startTimeSeconds + '"]').css('text-decoration', 'underline');
+                    });
+                }
+            }
+        });
+
+        $.fn.dataTable.ext.search.push(function (settings, searchData, index, rowData, counter) {
+            //var recorderFilterValue = $('#recorderFilter').val();
+            //var playerFilterValue = $('#playerFilter').val();
+            var stakeholderFilterValue = $('#stakeholderFilter').val();
+            var ratingFilterValue = $('#ratingFilter').val().replace("+", "");
+            var durationFilterValue = $('#durationFilter').val().replace("+", "");
+            //var recorder = null;
+            //var player = null;
+
+            var durationInMinutes = parseFloat(rowData[7]) / 60;
+            var averageRating = parseFloat(rowData[11]);
+            var recordingPlayerIds = ',' + rowData[8] + ',';
+            var playingPlayerIds = ',' + rowData[9] + ',';
+            var rowMatchesRecordingPlayerIdsFilter = recordingPlayerIds.indexOf(',' + stakeholderFilterValue + ',') >= 0;
+            var rowMatchesPlayingPlayerIdsFilter = playingPlayerIds.indexOf(',' + stakeholderFilterValue + ',') >= 0;
+            var rowMatchesRatingFilter = isNaN(ratingFilterValue) || ratingFilterValue <= averageRating;
+            var rowMatchesDurationFilter = isNaN(durationFilterValue) || durationFilterValue <= durationInMinutes;
+            return rowMatchesDurationFilter && rowMatchesRatingFilter && (stakeholderFilterValue === '' || (rowMatchesRecordingPlayerIdsFilter || rowMatchesPlayingPlayerIdsFilter));
+        });
+
+
+        document.getElementById("ns2Tab").click();
+    });
+
+</script>

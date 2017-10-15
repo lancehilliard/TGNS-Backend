@@ -1,0 +1,62 @@
+﻿@model TGNS.Portal.Models.BlacklistViewModel
+
+@{
+    ViewBag.Title = "Blacklists";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section HeadStyle
+{
+    .linkButton {
+        background:none!important;
+        border:none;
+        padding:0!important;
+        color: #428bca;
+    }
+    
+    .linkButton:hover
+    {
+        text-decoration: underline;
+    }
+}
+
+<h2>Blacklists</h2>
+
+<table class="table table-bordered table-striped" style="width: auto;">
+    <tr>
+        <th>NS2ID</th>
+        <th>From</th>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+@using (Html.BeginForm("Add", "Blacklist", FormMethod.Post, new { id = "AddBlacklistEntryForm", name = "AddBlacklistEntryForm" }))
+{
+        <td><input name="playerId" type="text" placeholder="NS2ID" style="width: 85px;" /></td>
+        <td><input name="from" type="text" placeholder="From" style="width: 85px;" /></td>
+        <td><input type="submit" value="Add" /></td>
+}
+    </tr>
+
+    @foreach (var item in Model.BlacklistEntries)
+    {
+        <tr>
+            <td> <span>@Html.Raw(item.PlayerId)</span> </td>
+            <td> @Html.Raw(item.From) </td>
+            <td>
+                @using (Html.BeginForm("Delete", "Blacklist", FormMethod.Post, new { id = "DeleteBlacklistEntryForm", name = "DeleteBlacklistEntryForm", style = "display: inline;" }))
+                {
+                    <input name="playerId" type="hidden" value="@Html.Raw(item.PlayerId)" /><input name="from" type="hidden" value="@Html.Raw(item.From)" />
+                    <button class="linkButton">Delete</button>
+                }
+            </td>
+        </tr>
+    }
+
+</table>
+Notes:
+<ul>
+    <li>only the Guardian mod supports blacklists</li>
+    <li>other mods could be enhanced to support blacklists</li>
+    <li>each server loads blacklists only at mapchange</li>
+</ul>
+

@@ -1,0 +1,102 @@
+﻿@model TGNS.Portal.Controllers.NotificationsIndexViewModel
+
+@{
+    ViewBag.Title = "Game Server Activity Notifications";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+<p>The game server can notify you on your device when certain events happen. Choose among the delivery networks available below. Have an idea for other notification channels? @Html.ActionLink("Submit feedback and tell us!", "Index", "Feedback")</p>
+<div style="white-space: nowrap;">
+    <h3>Steam IM</h3>
+    <div style="display: inline-block;" class="steamNotificationsContainer">
+        <span style="float: right; margin-right: -65px;">
+            <img src="http://i.imgur.com/JqnmaRQ.png" />
+        </span>
+        <ol>
+            <li>Add [TGNS] Bot (<a href="steam://friends/add/76561197977609161">add friend</a> | <a href="http://steamcommunity.com/id/tgns" target="_blank">profile</a>) to your Steam Friends!</li>
+            <li>
+                Choose which notifications you want using the checkboxes below:
+                <ul>
+                    @foreach (var subscription in Model.Subscriptions)
+                    {
+                        <li><input id="steam-@subscription.OfferingName" type="checkbox" data-offeringname="@subscription.OfferingName" data-offeringdisplayname="@subscription.OfferingDisplayName" @(subscription.Subscribed ? @"checked=""checked""" : string.Empty)/> <label for="steam-@subscription.OfferingName">@subscription.OfferingDisplayName: @subscription.OfferingDescription</label> </li>
+                    }
+                </ul>
+            </li>
+            <li>
+                Unsubscribe at any time!
+                <ul>
+                    <li>Every notification includes a link to this page - uncheck to unsubscribe.</li>
+                    <li>Unfriend [TGNS] Bot at any time to unsubscribe from all messages.</li>
+                </ul>
+            </li>
+            <li>Don't forget: make sure you're added [TGNS] Bot (<a href="steam://friends/add/76561197977609161">add friend</a> | <a href="http://steamcommunity.com/id/tgns" target="_blank">profile</a>) to your Steam Friends!</li>
+        </ol>
+        Note: You will not be sent Steam IM notifications while on the game server.
+    </div>
+</div>
+
+<div style="white-space: nowrap;">
+    <h3>Pushbullet</h3>
+    <div style="display: inline-block;">
+        <span style="float: right; margin-right: -65px;">
+            <img src="http://i.imgur.com/jAaXa59.png"/><br />
+            <img src="http://i.imgur.com/8Oidwpe.png"/>
+        </span>
+        <ol>
+            <li><a href="https://www.pushbullet.com/apps">Get Pushbullet</a> on your device or desktop!</li>
+            <li>
+                Subscribe to one or more TGNS channels:
+                <ul>
+                    <li><a href="https://www.pushbullet.com/channel?tag=tgns-bots" target="pushbullet">Bots</a>: Bots play is happening.</li>
+                    <li><a href="https://www.pushbullet.com/channel?tag=tgns-infested" target="pushbullet">Infested</a>: Infested play is happening. (Cooldown: 3 hours)</li>
+                    <li><a href="https://www.pushbullet.com/channel?tag=tgns-arclight" target="pushbullet">Arclight</a>: Arclight play is happening. (Cooldown: 3 hours)</li>
+                    <li><a href="https://www.pushbullet.com/channel?tag=tgns-priming" target="pushbullet">Server Priming</a>: 6+ Primer signers playing. (Cooldown: 3 hours)</li>
+                    <li><a href="https://www.pushbullet.com/channel?tag=tgns-seeded" target="pushbullet">Server Seeded</a>: Server has seeded to 12+ players.</li>
+                    <li><a href="https://www.pushbullet.com/channel?tag=tgns-primed" target="pushbullet">Server Primed</a>: 14+ Primer signers playing. (Cooldown: 3 hours)</li>
+                    <li>
+                        <a href="https://www.pushbullet.com/channel?tag=tgns-captains" target="pushbullet">Captains</a>:
+                        <div style="display: inline-block; vertical-align: top;">
+                            Captains play is happening.<br />note: this one gets noisy on Friday nights! :)
+                        </div>
+                    </li>
+                    <li><a href="https://www.pushbullet.com/channel?tag=tgns-guarded" target="pushbullet">Server Guarded</a>: Admin or Guardian playing. (Cooldown: 3 hours)</li>
+                    <li><a href="https://www.pushbullet.com/channel?tag=tgns-broadcasts" target="pushbullet">Broadcasts</a>: Admin-sourced announcements.</li>
+                </ul>
+            </li>
+            <li>
+                Unsubscribe at any time!
+                <ul>
+                    <li>Every notification has an unsubscribe link for its channel.</li>
+                    <li>You can unsubscribe here using any of the links above.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('input[type="checkbox"]').click(function() {
+        var $checkbox = $(this);
+        var isChecked = $checkbox.is(':checked');
+        $checkbox.attr('disabled', 'disabled');
+        var errorMessage;
+        $.post('@Url.Action("Set")', {offeringName: $checkbox.data('offeringname'), offeringDisplayName: $checkbox.data('offeringdisplayname'), subscribed:isChecked})
+            .done(function (data) {
+                if (!data.success) {
+                    errorMessage = data.msg;
+                }
+            })
+            .fail(function () {
+                errorMessage = 'There was an error updating your subscription.';
+            })
+            .always(function () {
+                if (errorMessage) {
+                    alert('Error: ' + errorMessage + '\n\nCheckbox will be returned to its original state.');
+                    $checkbox.prop('checked', isChecked ? '' : 'checked');
+                }
+                $checkbox.removeAttr('disabled');
+            });
+    });
+</script>

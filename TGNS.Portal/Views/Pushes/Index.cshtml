@@ -1,0 +1,73 @@
+﻿@model IEnumerable<TGNS.Core.Domain.IPushLog>
+
+@{
+    ViewBag.Title = "Pushes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section documentready
+{
+    $('#channelIdInput').val('@TempData["PushInputChannelId"]');
+    $('#titleInput').val('@TempData["PushInputTitle"]');
+    $('#messageInput').val('@TempData["PushInputMessage"]');
+}
+
+<h2>Pushes</h2>
+
+<div style="background-color: gray; padding: 15px;">
+    
+    @using (Html.BeginForm("Send", "Pushes", FormMethod.Post))
+    {
+        <select id="channelIdInput" name="channelId" title="Channel" style="border: 2px inset; padding: 2px;">
+            <option value="">Select Channel</option>
+            <option value="tgns">TGNS</option>
+            <option value="tgns-captains">TGNS Captains</option>
+            <option value="tgns-test">TGNS Test</option>
+        </select>
+        <input id="titleInput" type="text" name="title" value="" title="Title" placeholder="Title" style="width: 200px;" />
+        <input id="messageInput" type="text" name="message" value="" title="Message" placeholder="Message" style="width: 550px;" />
+        <button>Send</button>
+    }
+
+</div>
+
+<table class="table" style="margin-top: 10px;">
+    <tr>
+        <th>
+            When
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PlayerId)
+        </th>
+        <th>
+Input
+        </th>
+        <th>
+            Output
+        </th>
+        <th>
+            Result
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Created)
+        </td>
+        <td>
+            <span>@Html.DisplayFor(modelItem => item.PlayerId)</span>
+        </td>
+        <td>
+            <textarea style="width: 380px; height: 32px;">@Html.Raw(item.Summary.Input)</textarea>
+        </td>
+        <td>
+            <textarea style="width: 380px; height: 32px;">@Html.Raw(item.Summary.Output)</textarea>
+        </td>
+        <td>
+            @item.Summary.ResultCode @item.Summary.ResultDescription
+        </td>
+    </tr>
+}
+
+</table>

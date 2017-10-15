@@ -1,0 +1,31 @@
+﻿@using System.Data
+@model TGNS.Portal.Controllers.ReportViewModel
+
+@{
+    ViewBag.Title = Model.Title + " - Reports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.Title</h2>
+
+<table class="table table-bordered table-striped" style="width: auto;">
+    <thead>
+        <tr>
+            @foreach (DataColumn column in Model.Results.Columns)
+            {
+                <th>@column.ColumnName</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (DataRow row in Model.Results.Rows)
+        {
+            <tr>
+                @for (var columnIndex = 0; columnIndex < Model.Results.Columns.Count; columnIndex++)
+                {
+                    <td><span>@Convert.ToString(row.ItemArray[columnIndex])</span></td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,38 @@
+﻿@model TGNS.Portal.Models.ApprovalsViewModel
+
+@{
+    ViewBag.Title = "Approvals";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Approvals</h2>
+
+<table class="table">
+    <tr>
+        <th>Source</th>
+        <th>Target</th>
+        <th>Reason</th>
+        <th>When</th>
+    </tr>
+
+@foreach (var item in Model.Approvals) {
+    <tr>
+        <td>
+            <span>@Html.DisplayFor(modelItem => item.SourcePlayerId)</span>
+        </td>
+        <td>
+            <span>@Html.DisplayFor(modelItem => item.TargetPlayerId)</span>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Reason)
+        </td>
+        <td>
+            @Html.Raw(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(item.StartTimeSeconds).ToLocalTime())
+        </td>
+        <td>
+            @Html.ActionLink("Delete", "Delete", new { realm=item.Realm, serverName=item.ServerName, startTimeSeconds=item.StartTimeSeconds, sourcePlayerId=item.SourcePlayerId, targetPlayerId=item.TargetPlayerId })
+        </td>
+    </tr>
+}
+
+</table>

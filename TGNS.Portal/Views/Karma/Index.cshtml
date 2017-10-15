@@ -1,0 +1,109 @@
+﻿@using TGNS.Core.Data
+@model TGNS.Portal.Models.KarmaViewModel
+
+@{
+    ViewBag.Title = "Karma";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // var displayDeltas = Model.Deltas.Where(x=>x.Created >              DateTime.Now.AddDays(-14)).OrderByDescending(x => x.Created);
+    var displayDeltas = Model.Deltas.Where(x => x.Created > new DateTime(2017, 10, 14, 12, 0, 0).AddDays(-14)).OrderByDescending(x => x.Created);
+    var playerDisplay = string.IsNullOrWhiteSpace(Model.Bka) ? string.Empty : string.Format(" {0}", Model.Bka);
+}
+
+<p style="padding-top: 10px;">TGNS Karma is earned automatically for certain behaviors and reduces your odds of being bumped by reserved slots.</p>
+
+<table id="deltas" class="table table-bordered karmaTable" style="display: none; width: 750px;">
+    <thead>
+        <tr>
+            <th>What</th>
+            <th>Change</th>
+            <th>When</th>
+            <th>When (Day)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var delta in displayDeltas)
+            {
+            <tr>
+                <td>
+                    <span>@Html.DisplayFor(modelItem => delta.Name)</span>
+                </td>
+                <td class="amountCell" data-day="@delta.Created.ToShortDateString()" data-totalincludingtoday="@Model.Deltas.Where(x=>x.Created.Date <= delta.Created.Date).Sum(x=>x.Amount)">
+                    <span>@(delta.Amount < 0 ? string.Empty : "+")@Html.DisplayFor(modelItem => delta.Amount)</span>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => delta.Created)
+                </td>
+                <td class="dayCell">
+                    @delta.Created.ToShortDateString()
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var defaultSortColumn = 2;
+        var groupByColumn = 3;
+        var deltas = $('#deltas');
+        var table = deltas.on( 'init.dt', function () {
+            var headerDiv = $('<div style="float: left; padding-top: 3px;"><span>@Model.PlayerId</span>@playerDisplay: <strong>@Math.Floor(Model.Deltas.Sum(x => x.Amount)) Karma</strong></div>');
+            headerDiv.on('click', function () {
+                showPlayerAliases(this, @Model.PlayerId);
+            });
+            $('#deltas_wrapper').width('750px').css('padding-top', '3px').prepend(headerDiv);
+        }).DataTable({
+            "columnDefs": [
+                { "visible": false, "targets": groupByColumn }
+            ],
+            "paging": false,
+            "order": [[defaultSortColumn, 'desc']],
+            "displayLength": 25,
+            "drawCallback": function (settings) {
+                var api = this.api();
+                var rows = api.rows({ page: 'current' }).nodes();
+                var last = null;
+
+                api.column(groupByColumn, { page: 'current' }).data().each(function (group, i) {
+                    var sortColumnNumber = this.order()[0][0];
+                    if (last !== group && sortColumnNumber === defaultSortColumn) {
+                        var sum = 0;
+                        var totalincludingtoday = 0;
+                        $('td.amountCell[data-day="'+group+'"]').each(function () {
+                            sum += parseFloat($(this).text());
+                            if (totalincludingtoday === 0) {
+                                totalincludingtoday = parseFloat($(this).data('totalincludingtoday'));
+                            }
+                        });
+
+                        var row = $(rows).eq(i);
+                        row.before(
+                            '<tr><td colspan="3" style="padding-left: 4px; color: ' + (sum < 0 ? '#B94A48' : '#468847') + ';"><strong>' + group + ' : ' + totalincludingtoday.toFixed(2) + '</strong> <span class="glyphicon glyphicon-arrow-' + (sum < 0 ? 'down' : 'up') + '" style="font-size: smaller; margin-left: 10px; margin-right: 3px;"></span>' + Math.abs(sum.toFixed(2)) + '</td></tr>'
+                        );
+
+                        last = group;
+                    }
+                });
+            },
+            "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                $(nRow).css('background-color', aData[1].indexOf("-") > -1 ? '#F2DEDE' : '#DFF0D8');
+            },
+            "language": {
+                "emptyTable":     "Play on TGNS to earn karma!"
+            }
+        });
+
+        // Order by the grouping
+        $('#deltas tbody').on('click', 'tr.group', function () {
+            var currentOrder = table.order()[0];
+            if (currentOrder[0] === groupByColumn && currentOrder[1] === 'asc') {
+                table.order([groupByColumn, 'desc']).draw();
+            }
+            else {
+                table.order([groupByColumn, 'asc']).draw();
+            }
+        });
+        deltas.show();
+    });
+</script>

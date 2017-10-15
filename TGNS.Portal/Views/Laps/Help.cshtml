@@ -1,0 +1,38 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Laps - Help";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Laps: Help</h2>
+
+<img alt="Laps Example" src="@(Url.Content("~/assets/img/laps_example.png"))" style="border: 0; margin-left: 10px; margin-bottom: 10px; float: right;" />
+<p>Laps is solo, competitive time trials through stock NS2 maps. Following pre-defined room routes, you race against your own past times and those of other players. Each map may have multiple tracks, each released as a list of sequential room names.</p>
+<p>
+    <span style="font-weight: bold;">To begin:</span> type sh_laps in your NS2 console on TGNS
+</p>
+<h3>Tracks</h3>
+<p>
+    <span style="background-color: black; color: red; font-weight: bold; padding: 2px; margin-right: 3px;">Summit Perimeter:</span> Flight Control (Start) &rarr; Computer Lab &rarr; Sub Access &rarr; Maintenance Access &rarr; Ventilation &rarr; Pipe Junction &rarr; Data Core &rarr; Glass Hallway &rarr; Reactor Core &rarr; Atrium &rarr; Crevice &rarr; Summit Reception &rarr; Flight Control (Finish)
+</p>
+<p>
+    <span style="background-color: black; color: #4CFF00; font-weight: bold; padding: 2px; margin-right: 3px; ">Data Core Short:</span> Data Core (Start) &rarr; Pipe Junction &rarr; Crossroads &rarr; Glass Hallway &rarr; Data Core (Finish)
+</p>
+<p>
+    <span style="background-color: black; color: yellow; font-weight: bold; padding: 2px; margin-right: 3px;">Crossroads Short:</span> Crossroads (Start) &rarr; Computer Lab &rarr; Sub Access &rarr; Maintenance Access &rarr; Crossroads (Finish)
+</p>
+<p>
+    <span style="font-weight: bold;">To learn more:</span> @Html.ActionLink("View All Tracks", "Tracks")
+</p>
+<h3>Be Creative!</h3>
+<p>
+    Once you start a track, no guidance or restriction is given to how you proceed from room to room, so keep an open mind -- a few tracks follow unintuitive routes! Each track is finished after every lap, and your best lap times are shown on the TGNS Portal!
+</p>
+<h3>View Best Laps</h3>
+<p>
+    @Html.ActionLink("View Your Best Laps", "Manage") <span style="margin: 10px;">|</span> @Html.ActionLink("View Everyone's Best Laps", "Index")
+</p>
+<p>
+    Note: Laps is disabled during gameplay.
+</p>

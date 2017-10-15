@@ -1,0 +1,18 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Auto Max FPS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Auto Max FPS</h2>
+
+<p>Set the FPS which will automatically be set on your client as your "maxfps":</p>
+
+@using (Html.BeginForm("UpdateAutoMaxFps", "AutoMaxFps", FormMethod.Post))
+{
+    <div>
+        <span>Auto Max FPS: </span><input name="maxFps" type="text" value="@(ViewBag.MaxFps)" maxlength="3" style="width: 50px;" onkeypress='return event.charCode >= 48 && event.charCode <= 57' /> <button name="submit">Save</button>
+    </div>
+}
+<p style="margin-top: 15px;">Note: Anyone may set an auto maxfps, but the value applies only when you join the server as a Supporting Member.</p>

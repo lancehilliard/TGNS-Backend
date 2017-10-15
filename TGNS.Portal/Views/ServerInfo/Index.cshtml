@@ -1,0 +1,140 @@
+﻿@using TGNS.Portal.Classes
+@model TGNS.Portal.Models.ServerInfoViewModel
+
+@{
+    ViewBag.Title = "Server Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section documentready
+{
+    $('#notificationsTable label').qtip({
+        content: {
+            title: '<div style="font-size: large;">GameOver Alerts?</div>',
+            text: '<div style="font-size: medium; line-height: 25px;">Be alerted (browser tab message and sound) when a game ends on the server.</div>'
+        },
+        style: {
+            classes: 'qtip-dark qtip-shadow qtip-rounded',
+            width: '2000px'
+        }
+    });
+
+    function showAlert(serverName) {
+        $.titleAlert('GameOver: ' + serverName, {
+            requireBlur:false,
+            stopOnFocus:true,
+            duration:30000,
+            interval:500
+        });
+    }
+
+    function playSound(filename){
+        document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="/assets/audio/' + filename + '.mp3" type="audio/mpeg" /><embed hidden="true" autostart="true" loop="false" src="/assets/audio/' + filename +'.mp3" /></audio>';
+    }
+
+    var lastKnownPlayingPlayerCounts = new Object;
+    var NOTIFICATION_MINIMUM_PLAYER_COUNT = 6;
+    var NOTIFICATION_MINIMUM_READYROOM_PLAYER_COUNT = 4;
+    
+    var visibleNotificationCount
+    
+    var activityCharacters = ['|','/','-','\\'];
+    var activityCharactersIndex = 0;
+
+    function checkPlayers() {
+        if (visibleNotificationCount == 0) {
+            $.ajax({
+                dataType: "json",
+                url: '/ServerInfo/v1_0'
+            }).done(function(data) {
+                var infoDiv = $('#info');
+                infoDiv.empty();
+                data.forEach(function(server) {
+                    var serverName = server.serverName.replace("TacticalGamer.com - ", "");
+                    if (serverName && serverName != "") {
+                        var serverTable = $('<table></table>');
+                        var playingPlayersCount = 0;
+                        var playersCount = 0;
+                        var readyRoomPlayersCount = 0;
+                        if (server.players.length > 0) {
+                            server.players.forEach(function(player) {
+                                if (!player.isbot) {
+                                    if (player.team.number == 1 || player.team.number == 2) {
+                                        playingPlayersCount = playingPlayersCount + 1;
+                                    }
+                                    else if (player.team.number == 0) {
+                                        readyRoomPlayersCount = readyRoomPlayersCount + 1;
+                                    }
+                                    playersCount = playersCount + 1;
+                                }
+                                var spanCssClassName = 'team'+player.team.number+'player';
+                                var tdCssClassName = player.iscomm ? 'commplayer' : ''
+                                serverTable.append('<tr><td class="'+tdCssClassName+'"><span class="' + spanCssClassName + '" onclick="showPlayerAliases(this, ' + player.playerId + ');">' + player.name + '</span></td></tr>');
+                            });
+                        }
+                        serverTable.prepend('<tr><td style="font-weight: bold; color: white;">' + serverName + ' (' + playersCount + '): ' + server.mapName.replace('ns2_tgns_','').replace('ns2_','') + ' ['+ activityCharacters[++activityCharactersIndex%activityCharacters.length] +'] </td></tr>');
+                        var playingPlayerCountDroppedSignificantly = lastKnownPlayingPlayerCounts[serverName] && lastKnownPlayingPlayerCounts[serverName] >= NOTIFICATION_MINIMUM_PLAYER_COUNT && (playingPlayersCount <= lastKnownPlayingPlayerCounts[serverName] / 2);
+                        var userWantsNotifications = $('#notifyToggle').is(":checked")
+                        if (playingPlayerCountDroppedSignificantly && playersCount >= NOTIFICATION_MINIMUM_PLAYER_COUNT && readyRoomPlayersCount >= NOTIFICATION_MINIMUM_READYROOM_PLAYER_COUNT && userWantsNotifications) {
+                            showAlert(serverName);
+                            playSound('chirp_2');
+                        }
+                        lastKnownPlayingPlayerCounts[serverName] = playingPlayersCount;
+                        var serverDiv = $('<div style="background-color: #0d0d0c; display: inline-block; vertical-align: top; margin-right: 2px; margin-bottom: 10px; padding: 4px;"></div>');
+                        serverDiv.append(serverTable);
+                        infoDiv.append(serverDiv);
+                        $("#notificationsTable").show()
+                    }
+                });
+            }).always(function() {
+                setTimeout(checkPlayers, activityCharactersIndex > 5 ? 1500 : 250);
+            });
+        }
+        else {
+            setTimeout(checkPlayers, 250);
+        }
+    }
+    checkPlayers();
+    setInterval(function(){visibleNotificationCount = $('.notifyjs-container').filter(function (index) {return $(this).css("display") === "block";}).length;}, 250)
+}
+
+<h2>Server Info</h2>
+<div id="info"></div>
+<table id="notificationsTable" style="display: none;">
+    <tr>
+        <td><input type="checkbox" id="notifyToggle"/></td>
+        <td style="padding: 3px 0 0 5px;"><label for="notifyToggle">GameOver Alerts</label></td>
+    </tr>
+</table>
+<table id="optionsTable">
+    <tr>
+        <td colspan="2">See @Html.ActionLink("who you've crossed paths with", "Index", "History")!</td>
+    </tr>
+    <tr>
+        <td colspan="2">@Html.ActionLink("Get notified", "Index", "Notifications") when stuff happens!</td>
+    </tr>
+    @*<tr>
+        <td colspan="2">@Html.ActionLink("Join the full server to spectate!", "Manage", "FullSpec")</td>
+    </tr>*@
+    <tr>
+        <td colspan="2">@Html.ActionLink("Run laps", "Index", "Laps") to better learn maps.</td>
+    </tr>
+    <tr>
+        <td colspan="2">@Html.ActionLink("SpecBets", "Index", "SpecBets") when you're spectating on the server!</td>
+    </tr>
+    <tr>
+        <td colspan="2">@Html.ActionLink("Reset Servers", "Reset", "Servers") if mods fail to load.</td>
+    </tr>
+    <tr>
+        <td colspan="2">@Html.ActionLink("Restart Servers", "Restart", "Servers") that are offline or unresponsive.</td>
+    </tr>
+    <tr>
+        <td colspan="2">View our live @Html.ActionLink("MapCycle.json", "Index", "MapCycle").</td>
+    </tr>
+</table>
+
+<div id="sound"></div>
+@section scripts
+{
+    @Scripts.Render("~/assets/js/jquery.titlealert.min.js")
+}

@@ -1,0 +1,46 @@
+﻿@using TGNS.Core.Domain
+@using TGNS.Portal.Controllers
+@model TGNS.Portal.Models.LapsIndexViewModel
+
+@{
+    ViewBag.Title = "Laps - Everyone's Best Laps";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Laps: Everyone's Best Laps</h2>
+<p>You can also @Html.ActionLink("view only your laps", "Manage"), @Html.ActionLink("learn the tracks", "Tracks"), or @Html.ActionLink("learn more", "Help").</p>
+<div class="dataTableLoading">Loading...</div>
+<div style="width: 650px;">
+    <table>
+        <tr>
+            <td>
+                <table class="table table-bordered table-striped dataTable lapsTable" data-order='[[ 3, "asc" ]]' style="width: auto;">
+                    <thead>
+                        <tr>
+                            <th>Who</th>
+                            <th>Track</th>
+                            <th>Class</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var lap in Model.Laps)
+                        {
+                            <tr>
+                                <td><a target="_blank" href="@Url.Action("RedirectToSteamCommunityProfile", "PlayerData")/@lap.PlayerId">@lap.PlayerName</a></td>
+                                <td>@lap.Track</td>
+                                <td>@lap.ClassName</td>
+                                <td>@lap.Duration</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </td>
+            <td class="lapDataTableQuickSearchContainer">
+                <label>Quick Search:</label>
+                @Html.Partial("_TracksFilter", Model.Tracks)
+            </td>
+        </tr>
+    </table>
+    <p class="lapTableFootnote">Laps appear in this list only for players with a registered @Html.ActionLink("BKA", "Manage", "BetterKnownAs"). Only the best time per player per track is displayed.</p>
+</div>

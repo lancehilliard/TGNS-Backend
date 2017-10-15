@@ -1,0 +1,368 @@
+﻿@model IEnumerable<TGNS.Core.Domain.IPlayedGame>
+
+@{
+    ViewBag.Title = "My Recent Games";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section HeadStyle
+{
+    .gameMetricHeaderCell, .gameMetricCell {
+        background-color: black;
+        color: white;
+    }
+    .legendItem {
+        padding: 10px;
+        margin-right: 15px;
+    }
+    .table td {
+        white-space: nowrap;
+    }
+}
+
+<h2>My Recent Games</h2>
+
+<span class="gameMetricCell legendItem">Game-wide info is formatted like this.</span>
+<span class="legendItem">Everything else is player-specific data.</span>
+
+<table class="table">
+    <tr>
+        <th class="gameMetricHeaderCell">
+            Start Time
+        </th>
+        <th class="gameMetricHeaderCell">
+            End Time
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.ServerName)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.MapName)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.MarineStartLocationName)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.AlienStartLocationName)
+        </th>
+        @*<th class="gameMetricHeaderCell">
+        @Html.DisplayNameFor(model => model.LastModified)
+    </th>*@
+        @*<th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.StartTimeSeconds)
+        </th>*@
+        @*<th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.Realm)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.GameMode)
+        </th>*@
+        @*<th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.DurationInSeconds)
+        </th>*@
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.WinningTeamNumber)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.SkulksKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.GorgesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.LerksKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.FadesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.OnosKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.RifleMarinesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.JetpackMarinesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.ClawMinigunMarinesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.ClawRailgunMarinesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.MinigunMinigunMarinesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.RailgunRailgunMarinesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.ShotgunMarinesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.FlamethrowerMarinesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.GrenadeLauncherMarinesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.MarineTeamResourcesTotal)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.AlienTeamResourcesTotal)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.HivesKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.ChairsKilled)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.TotalPlayerCount)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.FullGameStrangerCount)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.FullGamePrimerWithGamesCount)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.FullGameSupportingMemberCount)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.CaptainsMode)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.IncludedBots)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.BuildNumber)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.StartingLocationsPathDistance)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.SurrenderTeamNumber)
+        </th>
+        <th class="gameMetricHeaderCell">
+            @Html.DisplayNameFor(model => model.WinOrLoseEndGameCountdownValue)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PlayerId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MarineSeconds)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AlienSeconds)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CommanderSeconds)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndGameCommander)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Captain)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Score)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Kills)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Assists)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Deaths)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PlayerIsSupportingMember)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PlayerIsPrimerSignerWithGames)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PlayerIsStranger)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WeldGave)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HealSprayGave)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td class="gameMetricCell">
+            @Html.Raw(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(item.StartTimeSeconds).ToLocalTime())
+        </td>
+        <td class="gameMetricCell">
+            @Html.Raw(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(item.StartTimeSeconds).AddSeconds(item.DurationInSeconds).ToLocalTime())
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.ServerName)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.MapName)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.MarineStartLocationName)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.AlienStartLocationName)
+        </td>
+        @*<td class="gameMetricCell">
+        @Html.DisplayFor(modelItem => item.LastModified)
+    </td>*@
+        @*<td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.StartTimeSeconds)
+        </td>*@
+        @*<td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.Realm)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.GameMode)
+        </td>*@
+        @*<td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.DurationInSeconds)
+        </td>*@
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.WinningTeamNumber)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.SkulksKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.GorgesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.LerksKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.FadesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.OnosKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.RifleMarinesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.JetpackMarinesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.ClawMinigunMarinesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.ClawRailgunMarinesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.MinigunMinigunMarinesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.RailgunRailgunMarinesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.ShotgunMarinesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.FlamethrowerMarinesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.GrenadeLauncherMarinesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.MarineTeamResourcesTotal)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.AlienTeamResourcesTotal)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.HivesKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.ChairsKilled)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.TotalPlayerCount)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.FullGameStrangerCount)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.FullGamePrimerWithGamesCount)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.FullGameSupportingMemberCount)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.CaptainsMode)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.IncludedBots)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.BuildNumber)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.StartingLocationsPathDistance)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.SurrenderTeamNumber)
+        </td>
+        <td class="gameMetricCell">
+            @Html.DisplayFor(modelItem => item.WinOrLoseEndGameCountdownValue)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PlayerId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MarineSeconds)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AlienSeconds)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CommanderSeconds)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EndGameCommander)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Captain)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Score)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Kills)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Assists)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Deaths)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PlayerIsSupportingMember)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PlayerIsPrimerSignerWithGames)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PlayerIsStranger)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.WeldGave)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HealSprayGave)
+        </td>
+    </tr>
+}
+
+</table>

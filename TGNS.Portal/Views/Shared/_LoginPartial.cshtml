@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    Session["UsingSessionTheFirstTimeTheUserHitsTheSiteActsAsWorkaroundForDefectInExternalSteamAuthenticationByWhichFirstUseOfSessionDuringExternalAuthenticationPostbackCausesAuthenticationToFail"] = true;
+}
+@*
+    @if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    @Html.ActionLink(User.Identity.GetUserName(), "Settings", "My", routeValues: null, htmlAttributes: new { title = "Settings" })
+                </li>
+            </ul>
+        }
+    }
+    else
+    {
+        <ul class="nav navbar-nav navbar-right">
+            <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+            <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        </ul>
+    }
+*@
+        @if (!string.IsNullOrWhiteSpace(HttpContext.Current.Items["UserName"] as string))
+        {
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    @Html.ActionLink(HttpContext.Current.Items["UserName"] as string, "Settings", "My", routeValues: null, htmlAttributes: new { title = "Settings" })
+                </li>
+            </ul>
+        }
+        else
+        {
+            using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = default(string) }, FormMethod.Post, new { @class = "navbar-right" }))
+                {
+                    @Html.AntiForgeryToken()
+            <button style="margin: 13px 0 10px -5px; background-color: #222222; display: inline; border: 0"  type="submit" id="Steam-nav" name="provider" value="Steam" title="Log in using your Steam account"><img alt="Sign in through Steam" src="@(Url.Content("~/assets/img/sits_small.png"))" style="border:0;" /></button>
+                }
+        @*
+            <ul class="nav navbar-nav navbar-right">
+                <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                <li>@Html.ActionLink("Log in", "ExternalLogin", "Account", routeValues: new {provider="Steam"}, htmlAttributes: new { id = "loginLink", @class="loginLink" })</li>
+            </ul>
+        *@
+        }

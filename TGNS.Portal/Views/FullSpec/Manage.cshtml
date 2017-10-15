@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "FullSpec";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section documentready
+{
+    notifySelector = 'button[name="optIn"]';
+    $(notifySelector).on('click', function(){$(this).notify("Saving " + $(this).text().toLowerCase() + ". Please wait.", {className: 'info', autoHide: false});setTimeout(function(){$(':input, :button').prop('disabled', true);},0)})
+}
+
+<h2>FullSpec</h2>
+
+<p>The game server typically only lets Strangers connect when a gameplay slot is available (Primer Signers, SM or not, may connect any time). FullSpec bypasses that logic <strong>if there's a spectator slot available</strong>, allowing Strangers to connect to the full server so that they may spectate. If you've signed the Primer, this setting is largely irrelevant to you, as you're allowed to connect to the server regardless of this setting's value. If you have not signed the Primer, considering enabling the option below if you'd like to connect and spectate the server while teams are full.</p>
+
+@{
+    var serverSpectatorCounts = ViewBag.ServerSpectatorCounts;
+    foreach (var key in serverSpectatorCounts.Keys)
+    {
+        var count = serverSpectatorCounts[key];
+        var single = count == 1;
+        var verb = single ? "is" : "are";
+        var noun = string.Format("spectator{0}", single ? string.Empty : "s");
+        <p>There @(verb) <strong>@(count)</strong> @(noun) on @(key) right now.</p>
+    }
+}
+
+<p>By default, players are not opted in to FullSpec.</p>
+<p>You may opt in or out at any time. Changes are known to all servers immediately.</p>
+<p>@(ViewBag.CurrentStatus)</p>
+
+@if (TempData["SuccessMessage"] != null)
+{ <span class="successMessage">@TempData["SuccessMessage"]</span> }
+
+@if (TempData["ErrorMessage"] != null)
+{ <span class="errorMessage">@TempData["ErrorMessage"]</span> }
+
+@using (Html.BeginForm("Edit", "FullSpec", FormMethod.Post))
+{
+    if (ViewBag.OptedIn)
+    { <button name="optIn" value="false" type="submit">Opt Out</button> }
+    else
+    { <button name="optIn" value="true" type="submit">Opt In</button> }
+}

@@ -1,0 +1,42 @@
+﻿@using TGNS.Core.Steam
+@model TGNS.Portal.Controllers.HistoryIndexViewModel
+
+@functions {
+    private SteamIdConverter _steamIdConverter;
+}
+
+@{
+    ViewBag.Title = "History";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    _steamIdConverter = new SteamIdConverter();
+}
+
+<h2>History</h2>
+
+<p>Players you've crossed paths with on TGNS recently:</p>
+
+<table class="table table-bordered table-striped" style="width: auto;">
+    <tr>
+        <th>
+            BKA
+        </th>
+        <th>Steam</th>
+    </tr>
+
+    @foreach (var item in Model.RecentPlaypals)
+    {
+        var steamCommunityProfileId = _steamIdConverter.GetSteamCommunityProfileIdFromNs2Id(item.PlayerId);
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a href="steam://friends/add/@steamCommunityProfileId">Add Friend</a> | <a href="http://steamcommunity.com/profiles/@steamCommunityProfileId" target="_blank">View Profile</a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div>- sorted by frequency to your presence</div>
+<div>- only BKA'd players appear</div>

@@ -1,0 +1,110 @@
+﻿@using System.Text.RegularExpressions
+@model IEnumerable<TGNS.Core.Domain.ITrack>
+
+<style>
+    .menus {
+        display: inline-block;
+        vertical-align: top;
+        overflow: hidden;
+        border: solid gray 1px;
+        margin-top: 4px;
+    }
+
+        .menus select {
+            padding: 10px;
+            margin: -5px -20px -5px -5px;
+        }
+</style>
+
+@{
+    var tracks = Json.Encode(Model.Select(x => x.MapName).Distinct().ToDictionary(x => x, x => Model.Where(y => y.MapName.Equals(x)).Select(y => y.Name)));
+}
+
+<div class="menus">
+    <select id="mapsDropdown"><option value="">All Tracks</option></select>
+    <select id="tracksDropdown" style="display: none;"></select>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+        var dataTable;
+
+        function searchDataTable(s) {
+            if (dataTable) {
+                dataTable.search(('"' + s + '"').replace('""', '')).draw();
+            }
+        }
+        var tracks = JSON.parse('@Html.Raw(tracks)');
+        var mapsDropdown = $('#mapsDropdown');
+        var tracksDropdown = $('#tracksDropdown');
+        var tracksKeys = Object.keys(tracks);
+        $.each(tracksKeys, function (index, mapName) {
+            var option = $("<option>").val(mapName).html(mapName);
+            option.click(function () { mapsDropdown.change(); })
+            mapsDropdown.append(option);
+        });
+        mapsDropdown.attr('size', tracksKeys.length + 1);
+        mapsDropdown.on('change', function () {
+            var mapName = $(this).val();
+            if (mapName.length > 0) {
+                var trackNames = tracks[mapName];
+                tracksDropdown.empty();
+                tracksDropdown.append($("<option>").val(mapName).html('Other Maps'));
+                tracksDropdown.append($('<option selected="selected">').val(mapName).html('All ' + mapName));
+                $.each(trackNames, function (index, trackName) {
+                    var option = $("<option>").val(trackName).html(trackName);
+                    option.click(function() {tracksDropdown.change();});
+                    tracksDropdown.append(option);
+                    if ('"' + trackName + '"' === tracksDropdown.data('dataTableSearch')) {
+                        option.attr('selected', 'selected');
+                    }
+                });
+                mapsDropdown.hide();
+                tracksDropdown.attr('size', trackNames.length + 2);
+                tracksDropdown.show().focus();
+            }
+            searchDataTable(mapName);
+        });
+        tracksDropdown.on('change', function () {
+            var selectedOption = $(this).find('option:selected');
+            var trackName = selectedOption.val();
+            if (trackName.indexOf('ns2_') === 0 && selectedOption.text().indexOf('Other') === 0) {
+                tracksDropdown.hide();
+                mapsDropdown.show().focus();
+            }
+            searchDataTable(trackName);
+        });
+        var menusDiv = $('div.menus');
+        menusDiv.find('option').on('click', function () { $(this).closest('select').trigger('change'); });
+        dataTable = $('.dataTable').DataTable({
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            stateSave: true,
+            drawCallback: function (settings) {
+                if (!dataTable) {
+                    menusDiv.find('option:selected').removeAttr('selected');
+                    var keepLookingForOptionToSelect = true;
+                    var dataTableSearch = settings.oPreviousSearch.sSearch;
+                    $.each(tracks, function (mapName, trackNames) {
+                        $.each(trackNames, function (index, trackName) {
+                            if (keepLookingForOptionToSelect && ('"' + trackName + '"' === dataTableSearch || '"' + mapName + '"' === dataTableSearch)) {
+                                mapsDropdown.val(mapName);
+                                tracksDropdown.data('dataTableSearch', dataTableSearch);
+                                mapsDropdown.trigger('change');
+                                keepLookingForOptionToSelect = false;
+                            }
+                        });
+                    });
+                    if (keepLookingForOptionToSelect && (dataTableSearch === '')) {
+                        mapsDropdown.val('');
+                        mapsDropdown.focus();
+                    }
+                }
+            }
+        });
+        $('.dataTableLoading').hide();
+        $('.dataTable').show();
+        $('.lapTableFootnote').show();
+
+    });
+</script>

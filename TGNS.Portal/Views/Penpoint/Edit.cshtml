@@ -1,0 +1,103 @@
+﻿@model TGNS.Portal.Models.PenpointViewModel
+
+@{
+    ViewBag.Title = "Penpoint";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section documentready
+{
+    var r = {}
+    r.BaseUrl = "@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))" + "Penpoint/";
+    r.SketchJson = @Html.Raw(Model.EditData.SketchJson);
+    r.SaveUrl = '@Url.Action("Save")';
+    r.GetImageBaseUrl = '@Url.Action("GetImage")';
+    r.EditDataId = '@Html.Raw(Model.EditData.Id)';
+    r.EditDataImageUrl = '@Html.Raw(Model.EditData.ImageUrl)';
+    r.CloneUrl = '@Url.Action("Clone")';
+    r.UserIsOwner = @Model.UserIsOwner.ToString().ToLower();
+    penpointInitEdit(r);
+}
+
+<h2>Penpoint</h2>
+
+<div id="prepare" style="display: none;">
+    <p>Penpoint an image to help others better understand your message.</p>
+    <p>Penpointing is drawing lines over an image and easily sharing the result -- all on the web.</p>
+    <p>To begin, provide the URL of the image you'll draw on.</p>
+    <table style="margin-bottom: 10px;">
+        <tr>
+            <td>Background URL : </td>
+            <td><input id="imagePathInput" value="@Model.EditData.ImageUrl" style="width: 350px;" /></td>
+            <td><button id="imagePathButton">Continue</button></td>
+        </tr>
+        <tr>
+            <td colspan="3"><hr/></td>
+        </tr>
+        <tr>
+            <td colspan="3">Example URLs:</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="2">Background image: <a href="https://i.imgur.com/yp6oEUe.png" target="_blank">https://i.imgur.com/yp6oEUe.png</a> </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="2">Share/Edit anytime: <a id="examplePenpointLink" target="_blank"></a> </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="2">Finished share via Imgur: <a href="http://i.imgur.com/KmII900.png" target="_blank">http://i.imgur.com/KmII900.png</a></td>
+        </tr>
+    </table>
+</div>
+
+<div id="edit" style="display: none;">
+    <div id="buttonsDiv" style="padding: 0 0 4px 0">
+        <span style="float: right; text-align: right">
+            <input type="button" id="createNewButton" value="New" style="margin-right: 15px;" title="Create a new Penpoint from scratch..." />
+            <input type="button" id="cloneAdvisoryButton" value="Clone" disabled="disabled" title="Create a new Penpoint with this Penpoint's images and lines..." />
+            <input type="button" id="shareButton" value="Share" title="Get the link for sharing this Penpoint..." />
+        </span>
+        <div id="colorLabel" style="display: inline;">Color : </div><input class="color" id="colorButton" value="#000000" type="button" style="margin-right: 15px;" title="Choose your line color...">
+        Width : <input type="button" id="thinThickButton" value="Thin" style="width: 55px; margin-right: 15px;" title="Toggle between Thin and Thick lines..." />
+        <input type="button" id="undoButton" value="Undo" disabled="disabled" title="Remove lines..."/>
+        <input type="button" id="redoButton" value="Redo" disabled="disabled" title="Re-add lines..."/>
+        <input type="button" id="clearButton" value="Clear" title="Clear all lines from the image..." />
+        <!-- 
+            erase doesn't remove path/stroke from json :( 
+            <input type="button" id="drawEraseButton" value="Draw" />
+            -->
+    </div>
+    <div id="editor"></div>
+    <input type="hidden" id="data" />
+    <input type="hidden" id="id" value="@Html.Raw(Model.EditData.Id)"/>
+    <canvas id="backgroundImageCanvas" style="display: none;"></canvas>
+    <canvas id="sketchpadCanvas" style="display: none;"></canvas>
+    <img id="sketchpadImage" style="display: none;"/>
+    <div style="display: none;">
+        <img id="combinedImage" />
+    </div>
+</div>
+@section scripts
+{
+    @Scripts.Render("~/assets/js/jquery-migrate-1.2.1.min.js")
+    @Scripts.Render("~/assets/js/raphael-min.js")
+    @Scripts.Render("~/assets/js/json2.min.js")
+    @Scripts.Render("~/assets/js/raphael.sketchpad.js")
+    @Scripts.Render("~/assets/js/jscolor/jscolor.js")
+    @Scripts.Render("~/assets/js/jquery-ui-1.11.1.custom/jquery-ui.min.js")
+    @Scripts.Render("~/assets/js/raphael.export.js")
+    @Scripts.Render("~/assets/js/penpoint.js")
+}
+@section Head {
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+    <style type="text/css">
+        .shareUrlInput::-ms-clear {
+            display: none;
+        }
+    </style>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
+}

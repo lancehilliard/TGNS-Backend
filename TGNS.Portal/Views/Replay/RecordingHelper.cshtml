@@ -1,0 +1,40 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "TGNS Recording Helper";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3>About</h3>
+<p>TGNS Recording Helper automates <a href="https://obsproject.com/">Open Broadcaster Software (OBS Classic)</a> to fully record games you play on TGNS. It runs <a href="https://i.imgur.com/Ta5KiYM.png">silently in your system tray</a> and helps OBS record every game you play.</p>
+
+<p>The effortless result, on your hard drive, is one video per game, each trimmed exactly to the start and end of the game, with a filename tailored specifically to that game. Everyone running TGNS Recording Helper during that game automatically has a recorded camera of that game perfectly synchronized to yours!</p>
+
+<p>You and everyone else can then @Html.ActionLink("add the synchronized videos to Replay", "Add", "Recordings"), so that we can all @Html.ActionLink("watch games from multiple cameras", "Index")! Adding cameras (videos) to Replay is really easy, and you earn @Html.ActionLink("Karma", "Index", "Karma") every time you do it!</p>
+
+<p>Visit the <a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-general-discussion/136129-tgns-recording-helper">TGNS Recording Helper forum thread</a> to learn the latest or ask any questions. Otherwise...</p>
+
+<div>
+    <a href="/assets/exe/TGNS.exe" ><img src="https://i.imgur.com/tiSGiwa.jpg" /></a> <span><a href="/assets/exe/TGNS.exe" style="font-size: 28px; font-weight: bold;">Download TGNS Recording Helper</a></span>
+</div>
+
+<p style="margin-top: 7px;">... and start contributing! :)</p>
+
+<h3>Getting Started</h3>
+
+<p>There are three pieces of information you need to give TGNS Recording Helper (TRH) once you launch it:</p>
+<ul>
+    <li><strong>OBS AutoLaunch Filename : </strong>This is the location of the installed <a href="https://obsproject.com/">OBS Classic</a> executable</li>
+    <li><strong>Recording Output Folder : </strong>This is the folder where OBS is writing videos to your disk</li>
+    <li><strong>Output File Extension : </strong>This is the file extension with which OBS is writing videos to your disk</li>
+</ul>
+<p>With OBS running, you can press TRH's Start/Stop buttons to test the OBS automation. A video file should appear in your <strong>Recording Output Folder</strong>.
+</p>
+
+<p>Leave TRH running in your system tray while you play on TGNS, and the video files will appear on your disk automatically. If you join TGNS without launching OBS, TRH will even launch OBS for you automatically so it's ready to go when it's time to record. If you have any trouble configuring OBS to capture videos you're satisfied with, visit <a href="https://www.tacticalgamer.com/forum/action/natural-selection/natural-selection-general-discussion/136090-capturing-sharing-a-given-game-from-multiple-concurrent-viewpoints">our forum thread for help on capturing video</a>.</p>
+
+<p>Consider leaving TRH running at all times, so you always automatically record all your TGNS games. Then add the games you most enjoyed to Replay so others can watch them!</p>
+
+<p>Thanks for contributing to @Html.ActionLink("Replay", "Index")!</p>

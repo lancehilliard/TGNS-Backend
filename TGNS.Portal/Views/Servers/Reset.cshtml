@@ -1,0 +1,57 @@
+﻿@model IEnumerable<TGNS.Portal.Models.ServerViewModel>
+
+@{
+    ViewBag.Title = "Reset Servers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section documentready
+{    
+    notifySelector = 'table.table tr:first';
+    $('button[name="serverId"]').on('click', function(){$(notifySelector).notify("Attempting Reset. Please wait.", {className: 'info', autoHide: false});setTimeout(function(){$(':input, :button').prop('disabled', true);},0)})
+}
+
+<h2>Reset Servers</h2>
+
+<p>For use after <a target="_blank" href="http://steamstat.us/">Steam Workshop</a> has failed to properly serve mods to the game server, "Reset Server" arbitrarily cycles the server's map, giving Steam Workshop another opportunity to perform.</p>
+
+<p><strong>If the server is offline entirely (not in the server browser), this tool cannot help restart the server.</strong></p>
+
+@{
+    if (ViewBag.PlayerHasGuardian)
+    {
+        using (Html.BeginForm("Reset", "Servers", FormMethod.Post))
+        {
+            <table class="table" style="width: auto;">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>&nbsp;</th>
+                </tr>
+
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <button name="serverId" value="@(Html.Raw(item.ID))" type="submit">Reset Server</button>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        <p>Reasons a server might not appear above:</p>
+        <ul>
+            <li>it's already loading a map</li>
+            <li>it has non-ReadyRoom players</li>
+            <li><em>you</em> reset it less than 2 minutes ago</li>
+        </ul>
+    }
+    else
+    {
+        <p>You may use this page after you meet the requirements below.</p>
+    }
+        <p>You must be opted in to Guardian and have played at least 40 games on TGNS to Reset Servers.</p>
+}
